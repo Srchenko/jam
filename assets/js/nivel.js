@@ -21,12 +21,14 @@ class Nivel_1 extends Phaser.Scene {
         this.initColliders();
         
         this.physics.add.collider(jugador, lvl_nuevo, this.cambiarNivel, null, this);
+
+        //sprintBar.bar.setBlendMode(Phaser.BlendModes.EXCLUSION);
     }
 
-    update(delta) {
+    update(time, delta) {
         Funciones.updateJugador(this, jugador, delta);
 
-        Funciones.updatePelota(this, pelota);
+        //Funciones.updatePelota(this, pelota);
     }
 
     initColliders() {

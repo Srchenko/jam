@@ -17,6 +17,7 @@ class Interfaz extends Phaser.Scene {
 
     create() {
         sprintBar.bar = this.add.sprite(20, 20, 'barrita').setOrigin(0, 0).setScale(5);
+        sprintBar.bar.alpha = 0.9;
 
         // BORRAR TODO ESTO PARA EL ENTREGAR.
         this.input.on('pointerup', function(pointer){

@@ -1,6 +1,7 @@
 let sceneGlobal;
 
 let jugador = null;
+let enemigo = null;
 let pelota = null;
 
 let keyUp = false;
@@ -17,7 +18,9 @@ let modoPelota = false;
 
 let sprint = false;
 
-let stamina = 10000;
+let stamina = 100;
+
+let tweenPelota;
 
 window.onload = function () {
     config = {
