@@ -1,5 +1,7 @@
 class Funciones {
     static patear(pelota, jugador) {
+        sceneGlobal.sound.play("patada");
+        sceneGlobal.sound.play("emocion");
         let angulo;
 
         angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, jugador.x, jugador.y);
@@ -60,8 +62,9 @@ class Funciones {
     }
 
     static updateJugador(scene, jugador, delta) {
+        sprintBar.progress = Phaser.Math.Clamp(Math.round(stamina/1000), 0, 9);
 
-        if(sprint && stamina > 500){
+        if(sprint && stamina > 5000){
             velocidad = velocidad_sprintando;
         }else{
             velocidad = velocidad_caminando;
@@ -71,22 +74,22 @@ class Funciones {
             jugador.anims.play("caminar", true);
             if (keyUp) {
                 if (keyLeft) {
-                    jugador.setVelocityY(-velocidad);
-                    jugador.setVelocityX(-velocidad);
+                    jugador.setVelocityY(-velocidad/1.5);
+                    jugador.setVelocityX(-velocidad/1.5);
                 } else if (keyRight) {
-                    jugador.setVelocityY(-velocidad);
-                    jugador.setVelocityX(velocidad);
+                    jugador.setVelocityY(-velocidad/1.5);
+                    jugador.setVelocityX(velocidad/1.5);
                 } else {
                     jugador.setVelocity(0, -velocidad);
                 }
             }
             else if (keyDown) {
                 if (keyLeft) {
-                    jugador.setVelocityY(velocidad);
-                    jugador.setVelocityX(-velocidad);
+                    jugador.setVelocityY(velocidad/1.5);
+                    jugador.setVelocityX(-velocidad/1.5);
                 } else if (keyRight) {
-                    jugador.setVelocityY(velocidad);
-                    jugador.setVelocityX(velocidad);
+                    jugador.setVelocityY(velocidad/1.5);
+                    jugador.setVelocityX(velocidad/1.5);
                 } else {
                     jugador.setVelocity(0, velocidad);
                 }
@@ -126,14 +129,24 @@ class Funciones {
         }
 
         if (sprint) {
-            if (stamina > 0) {
-                stamina -= delta*.1;
+            if (stamina > -5) {
+                stamina -= delta*.05;
             }
         }else {
             if (stamina < 10000) {
-                stamina += delta * .1;
+                stamina += delta * .01;
             }
         }
+    }
+
+    static initBordes(scene) {
+        let bordes = scene.physics.add.group();
+        bordes.create(101, 101, "vertical").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
+        bordes.create(1821, 101, "vertical").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
+        bordes.create(101, 101, "horizontal").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
+        bordes.create(101, 981, "horizontal").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
+
+        scene.physics.add.collider(bordes, pelota, this.fueraLinea, null, scene);
     }
 
     static updatePelota(scene, pelota) {
@@ -147,12 +160,34 @@ class Funciones {
     }
 
     static fueraLinea(pelotis, bordis){
+        sceneGlobal.sound.play("silbato");
+        sceneGlobal.sound.play("patada");
         if(pelotis.x > config.width/2){
+            var _= sceneGlobal.add.sprite(50,config.height/2,"personaje_fuera").setScale(4);
+            _.rotation = Math.PI/2;
+            _.anims.play("personaje_fuera", false);
+            new Promise(
+                function(resolve) {  
+                    setTimeout(function(){
+                        _.destroy();
+                        resolve();
+                    }, 2000);
+            });
             pelotis.setVelocity(0);
             pelotis.x = 150;
             pelotis.y = config.height/2;
             pelotis.setVelocityX(300);
         }else {
+            var _= sceneGlobal.add.sprite(config.width - 50,config.height/2,"personaje_fuera").setScale(4);
+            _.rotation = -Math.PI/2;
+            _.anims.play("personaje_fuera", false);
+            new Promise(
+                function(resolve) {  
+                    setTimeout(function(){
+                        _.destroy();
+                        resolve();
+                    }, 2000);
+            });
             pelotis.setVelocity(0);
             pelotis.x = config.width - 150;
             pelotis.y = config.height/2;

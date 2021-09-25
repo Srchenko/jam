@@ -1,3 +1,5 @@
+let sceneGlobal;
+
 let jugador = null;
 let pelota = null;
 
@@ -42,7 +44,7 @@ window.onload = function () {
             disableWebAudio: true
         },
         pixelArt: true,
-        scene: [Preloads, Nivel_1, Nivel_2]
+        scene: [Preloads, Nivel_1, Nivel_2, Interfaz]
     };
 
     game = new Phaser.Game(config);
