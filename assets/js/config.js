@@ -1,4 +1,8 @@
+const EVENT_ABRIR_PUERTAS = new Event('abrir_puertas');
+
 let sceneGlobal;
+
+let enemigos_vivos = 0;
 
 let obstaculos = [];
 let enemigos = [];

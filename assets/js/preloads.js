@@ -13,6 +13,8 @@ class Preloads extends Phaser.Scene {
         this.load.spritesheet('pelota', 'assets/images/pelota.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('personaje_fuera', 'assets/images/fuera_pj.png', { frameWidth: 32, frameHeight: 32 });
 
+        this.load.spritesheet('no_puerta', 'assets/images/no_puerta.png', { frameWidth: 32, frameHeight: 32 });
+
         // this.load.audio('multitud', 'assets/sounds/multitud.ogg');
         // this.load.audio('emocion', 'assets/sounds/emocion.ogg');
         // this.load.audio('patada', 'assets/sounds/patada.ogg');
@@ -46,6 +48,13 @@ class Preloads extends Phaser.Scene {
         this.anims.create({
             key: 'personaje_fuera',
             frames: this.anims.generateFrameNumbers('personaje_fuera', { start: 0, end: 2 }),
+            frameRate: 5,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'no_puerta',
+            frames: this.anims.generateFrameNumbers('no_puerta', { start: 0, end: 3 }),
             frameRate: 5,
             repeat: 0
         });

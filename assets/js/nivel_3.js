@@ -9,24 +9,19 @@ class Nivel_3 extends Phaser.Scene {
 
         sceneGlobal = this;
 
-        let lvl_nuevo = this.add.rectangle(960, 0, 250, 60, 0xffffff);
-        this.physics.add.existing(lvl_nuevo);
-        lvl_nuevo.visible = false;
-
         this.add.image(config.width / 2, config.height / 2, "segunda_etapa");
 
         Funciones.initJugador(this);
         Funciones.initPelota(this);
-        //Funciones.initEnemigo(this, (Math.PI / 2) - (Math.PI / 4), {x: 1627.3856975381009, y: 695.5216881594373});
-        //Funciones.initEnemigo(this, (Math.PI / 2) - (Math.PI / 4), {x: 167.3856975381009, y: 165.5216881594373});
+        
         Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397.3856975381009, y: 225.5216881594373});
 
         Funciones.initInputs(this);
         Funciones.initBordes(this);
 
         this.initColliders();
-        
-        this.physics.add.collider(jugador, lvl_nuevo, this.cambiarNivel, null, this);
+    
+        Funciones.arbitro_arriba(this, "nivel_3");
     }
 
     update(time, delta){
@@ -64,9 +59,5 @@ class Nivel_3 extends Phaser.Scene {
         enemigos_grandes.forEach(enemigo => {
             this.physics.add.collider(pelota, enemigo, Funciones.patearEnemigoGrande, null, this);
         });
-    }
-
-    cambiarNivel(uno, dos){
-        this.scene.start('nivel_2');
     }
 }

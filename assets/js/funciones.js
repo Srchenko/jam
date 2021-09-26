@@ -154,7 +154,9 @@ class Funciones {
             //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
             //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
         }else if (dominio_de_la_pelota == "player") {
-            console.log("lo fajaste");
+            enemigo.setVelocity(0,0);
+            enemigo.destroy();
+            enemigos_vivos--;
         }
     }
 
@@ -187,6 +189,7 @@ class Funciones {
         enemigo.setBounce(1);
         enemigo.anims.play("enemigo_moverse");
         enemigos.push(enemigo);
+        enemigos_vivos++;
     }
 
     static initEnemigoGrandote(scene, rotacion, posicion) {
@@ -210,6 +213,7 @@ class Funciones {
             )
         });
         enemigos_grandes.push(enemigo);
+        enemigos_vivos++;
     }
 
     static initInputs(scene) {
@@ -247,6 +251,11 @@ class Funciones {
     }
 
     static updateJugador(scene, jugador, delta) {
+        if (enemigos_vivos <= 0) {
+            this.emitter=EventDispatcher.getInstance();
+            this.emitter.emit("abrir_puertas")
+        }
+
         if (contador_dominio_pelota >= 3) {
             dominio_de_la_pelota = "nadie";
         }else {
@@ -456,5 +465,71 @@ class Funciones {
                 }
             }));
         }
+    }
+
+    static arbitro_arriba(scene, nivel_siguiente = "nivel_3") {
+        let lvl_nuevo = scene.add.rectangle(960, 0, 250, 60, 0xffffff);
+        let lvl_obj = scene.physics.add.existing(lvl_nuevo);
+        lvl_nuevo.visible = false;
+        lvl_nuevo.lvl_siguiente = nivel_siguiente;
+        lvl_nuevo.body.moves = false;
+        scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+
+        scene.emitter=EventDispatcher.getInstance();
+        let puerta = scene.add.sprite(960, -110, "no_puerta").setOrigin(0.5, 0).setScale(8);
+        scene.emitter.on('abrir_puertas', function (e) { 
+            puerta.anims.play("no_puerta", false); 
+            enemigos_vivos = 99;
+        });
+    }
+    static arbitro_izquierda(scene, nivel_siguiente = "nivel_3") {
+        let lvl_nuevo = scene.add.rectangle(30, 400, 58, 243, 0xffffff).setOrigin(0, 0);
+        let lvl_obj = scene.physics.add.existing(lvl_nuevo);
+        lvl_nuevo.visible = true;
+        lvl_nuevo.lvl_siguiente = nivel_siguiente;
+        lvl_nuevo.body.moves = false;
+        scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+
+        sceneGlobal.emitter=EventDispatcher.getInstance();
+        let puerta = sceneGlobal.add.sprite(40, config.height/2, "no_puerta").setOrigin(.5, .5).setScale(8).setRotation(-Math.PI/2);
+        sceneGlobal.emitter.on('abrir_puertas', function (e) { 
+            puerta.anims.play("no_puerta", false); 
+            enemigos_vivos = 99;
+        });
+    }
+    static arbitro_derecha(scene, nivel_siguiente = "nivel_3") {
+        let lvl_nuevo = scene.add.rectangle(1820, 432, 74, 193, 0xffffff).setOrigin(0, 0);
+        let lvl_obj = scene.physics.add.existing(lvl_nuevo);
+        lvl_nuevo.visible = true;
+        lvl_nuevo.lvl_siguiente = nivel_siguiente;
+        lvl_nuevo.body.moves = false;
+        scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+
+        sceneGlobal.emitter=EventDispatcher.getInstance();
+        let puerta = sceneGlobal.add.sprite(config.width - 40, config.height/2, "no_puerta").setOrigin(.5, .5).setScale(8).setRotation(Math.PI/2);
+        sceneGlobal.emitter.on('abrir_puertas', function (e) { 
+            puerta.anims.play("no_puerta", false); 
+            enemigos_vivos = 99;
+        });
+    }
+    static arbitro_abajo(scene, nivel_siguiente = "nivel_3") {
+        let lvl_nuevo = scene.add.rectangle(844, 983, 240,  78, 0xffffff).setOrigin(0, 0);
+        let lvl_obj = scene.physics.add.existing(lvl_nuevo);
+        lvl_nuevo.visible = true;
+        lvl_nuevo.lvl_siguiente = nivel_siguiente;
+        lvl_nuevo.body.moves = false;
+        scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+
+        sceneGlobal.emitter=EventDispatcher.getInstance();
+        let puerta = sceneGlobal.add.sprite(960, config.height - 40, "no_puerta").setOrigin(.5, .5).setScale(8).setRotation(-Math.PI);
+        sceneGlobal.emitter.on('abrir_puertas', function (e) { 
+            puerta.anims.play("no_puerta", false); 
+            enemigos_vivos = 99;
+        });
+    }
+
+    static cambiarNivel(uno, dos){
+        if (enemigos_vivos != 99) return;
+        this.scene.start(dos.lvl_siguiente);
     }
 }
