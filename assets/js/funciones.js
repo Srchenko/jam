@@ -1,19 +1,20 @@
 let tweenTemp = [];
+let pelotaPromise;
 
 class Funciones {
-    static patear(pelota, jugador) {
+    static rebotaObstaculo(pelota, obstaculo) {
+        contador_dominio_pelota = 0;
         //sceneGlobal.sound.play("patada");
         //sceneGlobal.sound.play("emocion");
         let angulo;
 
-        angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, jugador.x, jugador.y);
+        angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, obstaculo.x, obstaculo.y);
 
         let x = pelota.x + Math.cos(angulo) * -velocidad; 
         let y = pelota.y + Math.sin(angulo) * -velocidad;
 
         pelota.rotation = angulo - (Math.PI/2);
 
-        console.log("tween");
         tweenTemp.push(sceneGlobal.tweens.add({
             targets: pelota,
             paused: false,
@@ -29,38 +30,132 @@ class Funciones {
         //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
     }
 
+    static patear(pelota, jugador) {
+        if (dominio_de_la_pelota != "enemigo") {
+            dominio_de_la_pelota = "player";
+            contador_dominio_pelota = 0;
+            //sceneGlobal.sound.play("patada");
+            //sceneGlobal.sound.play("emocion");
+            let angulo;
+
+            angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, jugador.x, jugador.y);
+
+            let x = pelota.x + Math.cos(angulo) * -velocidad; 
+            let y = pelota.y + Math.sin(angulo) * -velocidad;
+
+            pelota.rotation = angulo - (Math.PI/2);
+
+            tweenTemp.push(sceneGlobal.tweens.add({
+                targets: pelota,
+                paused: false,
+                x: x,
+                y: y,
+                duration: 1500,
+                ease: 'Power1',
+            }));
+
+            //tweenTemp.stop();
+
+            //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
+            //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
+        }else {
+            console.log("te fajaron");
+        }
+    }
+
     static patearEnemigo(pelota, enemies) {
-        //sceneGlobal.sound.play("patada");
-        //sceneGlobal.sound.play("emocion");
-        let angulo;
+        if (dominio_de_la_pelota != "player") {
+            dominio_de_la_pelota = "enemigo";
+            contador_dominio_pelota = 0;
+            //sceneGlobal.sound.play("patada");
+            //sceneGlobal.sound.play("emocion");
+            let angulo;
 
-        angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, enemies.x, enemies.y);
+            angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, enemies.x, enemies.y);
 
-        let x = pelota.x + Math.cos(angulo) * -velocidad; 
-        let y = pelota.y + Math.sin(angulo) * -velocidad;   
+            let x = pelota.x + Math.cos(angulo) * -500; 
+            let y = pelota.y + Math.sin(angulo) * -500;   
 
-        let ang_empuje = Phaser.Math.Angle.Between(pelota.x, pelota.y, enemies.x, enemies.y);
+            let ang_empuje = Phaser.Math.Angle.Between(pelota.x, pelota.y, enemies.x, enemies.y);
 
-        enemies.setVelocity(Math.cos(ang_empuje) * -300, Math.sin(ang_empuje) * -300);
+            enemies.setVelocity(Math.cos(ang_empuje) * -400, Math.sin(ang_empuje) * -400);
 
-        let ang_rebote = Math.atan2(enemies.body.velocity.x/300, enemies.body.velocity.y/(-300));
-        enemies.rotation = ang_rebote;
-        pelota.rotation = angulo - (Math.PI/2);
+            let ang_rebote = Math.atan2(enemies.body.velocity.x/300, enemies.body.velocity.y/(-300));
+            enemies.rotation = ang_rebote;
+            pelota.rotation = angulo - (Math.PI/2);
 
-        console.log("tween");
-        tweenTemp.push(sceneGlobal.tweens.add({
-            targets: pelota,
-            paused: false,
-            x: x,
-            y: y,
-            duration: 1500,
-            ease: 'Power1',
-        }));
+            tweenTemp.push(sceneGlobal.tweens.add({
+                targets: pelota,
+                paused: false,
+                x: x,
+                y: y,
+                duration: 1000,
+                ease: 'Power1',
+                onComplete: () => {
+                    dominio_de_la_pelota = "nadie";
+                }
+            }));
 
-        //tweenTemp.stop();
+            //tweenTemp.stop();
 
-        //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
-        //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
+            //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
+            //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
+        }else if (dominio_de_la_pelota == "player") {
+            console.log("lo fajaste");
+        }
+    }
+
+    static patearEnemigoGrande(pelota, enemies) {
+        if (dominio_de_la_pelota != "player") {
+            enemigo.setVelocity(0,0);
+            dominio_de_la_pelota = "enemigo";
+            contador_dominio_pelota = 0;
+            //sceneGlobal.sound.play("patada");
+            //sceneGlobal.sound.play("emocion");
+            let angulo;
+
+            angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, enemies.x, enemies.y);
+
+            let x = pelota.x + Math.cos(angulo) * -1000; 
+            let y = pelota.y + Math.sin(angulo) * -1000;   
+
+            //enemies.setVelocity(Math.cos(ang_empuje) * -400, Math.sin(ang_empuje) * -400);
+
+            let ang_rebote = Math.atan2(enemies.body.velocity.x/300, enemies.body.velocity.y/(-300));
+            enemies.rotation = angulo - (Math.PI/2);
+            pelota.rotation = angulo - (Math.PI/2);
+
+            tweenTemp.push(sceneGlobal.tweens.add({
+                targets: pelota,
+                paused: false,
+                x: x,
+                y: y,
+                duration: 1000,
+                ease: 'Power1',
+                onComplete: () => {
+                    dominio_de_la_pelota = "nadie";
+                }
+            }));
+
+            enemigo.anims.pause();
+            new Promise(function(resolve, reject) {
+                resolve(
+                    setTimeout(function() {
+                        let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y) + Phaser.Math.FloatBetween(-.3, .3);
+                        enemigo.rotation = angle + (Math.PI/2);
+                        enemigo.anims.resume();
+                        enemigo.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
+                    }, 4000)
+                )
+            });
+
+            //tweenTemp.stop();
+
+            //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
+            //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
+        }else if (dominio_de_la_pelota == "player") {
+            console.log("lo fajaste");
+        }
     }
 
     static initPelota(scene) {
@@ -69,7 +164,7 @@ class Funciones {
             .setCollideWorldBounds(true)
             .setCircle(8)
             .setImmovable(true)
-            .setOffset(7.5, 7.5);
+            .setOffset(7.75, 7.75);
             
         pelota.body.moves = false;
         pelota.body.setDrag(0, 0);
@@ -82,15 +177,39 @@ class Funciones {
             .setScale(4);
     }
 
-    static initEnemigo(scene, rotacion, velocidad) {
+    static initEnemigo(scene, rotacion, posicion) {
         enemigo = scene.physics.add
-            .sprite(config.width / 2 + 50, config.height / 2 - 100, "enemigo_1")
+            .sprite(posicion.x, posicion.y, "enemigo_1")
             .setCollideWorldBounds(true)
             .setScale(3);
         enemigo.rotation = rotacion;
         enemigo.setVelocity(300,-300);
         enemigo.setBounce(1);
         enemigo.anims.play("enemigo_moverse");
+        enemigos.push(enemigo);
+    }
+
+    static initEnemigoGrandote(scene, rotacion, posicion) {
+        enemigo = scene.physics.add
+            .sprite(posicion.x, posicion.y, "enemigo_1")
+            .setCollideWorldBounds(true)
+            .setScale(5);
+        let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y);
+        enemigo.rotation = angle + (Math.PI/2);
+        enemigo.setBounce(1);
+        enemigo.anims.play("enemigo_moverse");
+        enemigo.anims.pause();
+        new Promise(function(resolve, reject) {
+            resolve(
+                setTimeout(function() {
+                    let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y);
+                    enemigo.rotation = angle + (Math.PI/2);
+                    enemigo.anims.resume();
+                    enemigo.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
+                }, 4000)
+            )
+        });
+        enemigos_grandes.push(enemigo);
     }
 
     static initInputs(scene) {
@@ -128,6 +247,12 @@ class Funciones {
     }
 
     static updateJugador(scene, jugador, delta) {
+        if (contador_dominio_pelota >= 3) {
+            dominio_de_la_pelota = "nadie";
+        }else {
+            contador_dominio_pelota += delta*.005;
+        }
+
         sprintBar.progress = Phaser.Math.Clamp(Math.round(stamina/11.11), 0, 9);
 
         if(sprint && stamina > 5){
@@ -217,18 +342,30 @@ class Funciones {
         bordes.create(1821, 101, "vertical").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
         bordes.create(101, 101, "horizontal").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
         bordes.create(101, 981, "horizontal").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
+        bordes.name = "bordes";
+
+        obstaculos.push(bordes);
+
+        console.log(bordes);
 
         scene.physics.add.collider(bordes, pelota, this.fueraLinea, null, scene);
-        scene.physics.add.collider(bordes, enemigo, this.rotarEnemigo, null, scene);
+        //scene.physics.add.collider(bordes, enemigo, this.rotarEnemigo, null, scene);
     }
 
     static updatePelota(scene, pelota) {
-        if (pelota.body.velocity.x != 0 || pelota.body.velocity.y != 0) {
-            pelota.anims.play("pelota_gira", true);
-            pelota.anims.frame = pelota.body.velocity.x;
-            //pelota.rotation = Math.atan2(pelota.body.velocity.y, pelota.body.velocity.x) - Math.PI / 2;
-        }else {
-            pelota.anims.pause();
+        // if (pelota.body.velocity.x != 0 || pelota.body.velocity.y != 0) {
+        //     pelota.anims.play("pelota_gira", true);
+        //     pelota.anims.frame = pelota.body.velocity.x;
+        //     //pelota.rotation = Math.atan2(pelota.body.velocity.y, pelota.body.velocity.x) - Math.PI / 2;
+        // }else {
+        //     pelota.anims.pause();
+        // }
+        if (dominio_de_la_pelota == "player") {
+            pelota.setTint(0x00ff00);
+        }else if (dominio_de_la_pelota == "enemigo") {
+            pelota.setTint(0xff0000);
+        }else if (dominio_de_la_pelota == "nadie") {
+            pelota.setTint(0x0000ff);
         }
     }
 
@@ -237,12 +374,30 @@ class Funciones {
         enemis.rotation = ang_rebote;
     }
 
+    static rotarEnemigoGrande(enemis, cualquiercosa){
+        let ang_rebote = Phaser.Math.Angle.Between(enemis.x, enemis.y, pelota.x, pelota.y);
+        enemis.setVelocity(0);
+        enemis.rotation = ang_rebote + (Math.PI/2);
+        enemigo.anims.pause();
+        new Promise(function(resolve, reject) {
+            resolve(
+                setTimeout(function() {
+                    let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y) + Phaser.Math.FloatBetween(-.3, .3);
+                    enemigo.rotation = angle + (Math.PI/2);
+                    enemigo.anims.resume();
+                    enemigo.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
+                }, 4000)
+            )
+        });
+    }
+
     static pelotaObstaculo(pelota, obstaculo){
         tweenTemp.forEach(t => t.stop());
         Funciones.patear(pelota, obstaculo);
     }
 
     static fueraLinea(pelotis, bordis){
+        dominio_de_la_pelota = "nadie";
         //sceneGlobal.sound.play("silbato");
         //sceneGlobal.sound.play("patada");
         //pelotis.tween.restart();
@@ -270,6 +425,9 @@ class Funciones {
                 y: config.height/2,
                 duration: 1500,
                 ease: 'Power1',
+                onComplete: () => {
+                    dominio_de_la_pelota = "nadie";
+                }
             }));
         }else {
             var _= sceneGlobal.add.sprite(config.width - 50,config.height/2,"personaje_fuera").setScale(4);
@@ -293,6 +451,9 @@ class Funciones {
                 y: config.height/2,
                 duration: 1500,
                 ease: 'Power1',
+                onComplete: () => {
+                    dominio_de_la_pelota = "nadie";
+                }
             }));
         }
     }

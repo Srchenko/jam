@@ -1,5 +1,12 @@
 let sceneGlobal;
 
+let obstaculos = [];
+let enemigos = [];
+let enemigos_grandes = [];
+
+let dominio_de_la_pelota = "nadie";
+let contador_dominio_pelota = 0;
+
 let jugador = null;
 let enemigo = null;
 let pelota = null;
@@ -47,7 +54,7 @@ window.onload = function () {
             disableWebAudio: true
         },
         pixelArt: true,
-        scene: [Preloads, Nivel_1, Nivel_2, Interfaz]
+        scene: [Preloads, Nivel_1, Nivel_2, Nivel_3, Interfaz]
     };
 
     game = new Phaser.Game(config);

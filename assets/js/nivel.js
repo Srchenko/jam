@@ -23,19 +23,35 @@ class Nivel_1 extends Phaser.Scene {
         this.physics.add.collider(jugador, lvl_nuevo, this.cambiarNivel, null, this);
 
         //sprintBar.bar.setBlendMode(Phaser.BlendModes.EXCLUSION);
-    }
+    }       
 
     update(time, delta) {
         Funciones.updateJugador(this, jugador, delta);
 
-        //Funciones.updatePelota(this, pelota);
+        Funciones.updatePelota(this, pelota);
     }
 
     initColliders() {
         this.physics.add.collider(pelota, jugador, Funciones.patear, null, this);
+
+        obstaculos.forEach(obstaculo => {
+            if (obstaculo.name != "bordes") {
+                this.physics.add.collider(pelota, obstaculo, Funciones.rebotaObstaculo, null, this);
+                this.physics.add.collider(jugador, obstaculo, null, null, this);
+            }else {
+                //this.physics.add.collider(pelota, obstaculo, Funciones.rebotaObstaculo, null, this);
+            }
+            enemigos.forEach(enemigo => {
+                this.physics.add.collider(enemigo, obstaculo, Funciones.rotarEnemigo, null, this);
+            });
+        });
+
+        enemigos.forEach(enemigo => {
+            this.physics.add.collider(pelota, enemigo, Funciones.patearEnemigo, null, this);
+        });
     }
 
     cambiarNivel(uno, dos){
-        this.scene.start('nivel_2');
+        this.scene.start('nivel_3');
     }
 }

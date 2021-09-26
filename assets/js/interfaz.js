@@ -40,8 +40,7 @@ class Interfaz extends Phaser.Scene {
                     this.add.rectangle(dibujostart.x, dibujostart.y, pointer.x - dibujostart.x,  pointer.y - dibujostart.y, 0xffffff).setOrigin(0, 0).setAlpha(0.2);
                     this.add.rectangle(touchX, touchY, 20, 20, 0xffffff);
 
-                    console.log(`let col = this.add.rectangle(${dibujostart.x}, ${dibujostart.y}, ${pointer.x - dibujostart.x},  ${pointer.y - dibujostart.y}, 0xffffff).setOrigin(0, 0).setAlpha(0);\nthis.physics.add.existing(col, true);\nthis.physics.add.collider(pelota, col, null, null, this);\nthis.physics.add.collider(jugador, col, null, null, this);
-                    `);
+                    console.log(`this.physics.add.existing(obstaculos[obstaculos.push(this.add.rectangle(${dibujostart.x}, ${dibujostart.y}, ${pointer.x - dibujostart.x},  ${pointer.y - dibujostart.y}, 0xffffff).setOrigin(0, 0).setAlpha(0)) - 1], true);`);
                 }
                 dibujando = false;
             }

@@ -1,6 +1,6 @@
-class Nivel_2 extends Phaser.Scene {
+class Nivel_3 extends Phaser.Scene {
     constructor() {
-        super("nivel_2");
+        super("nivel_3");
     }
 
     create(){
@@ -17,8 +17,9 @@ class Nivel_2 extends Phaser.Scene {
 
         Funciones.initJugador(this);
         Funciones.initPelota(this);
-        Funciones.initEnemigo(this, (Math.PI / 2) - (Math.PI / 4), {x: 1627.3856975381009, y: 695.5216881594373});
-        Funciones.initEnemigo(this, (Math.PI / 2) - (Math.PI / 4), {x: 167.3856975381009, y: 165.5216881594373});
+        //Funciones.initEnemigo(this, (Math.PI / 2) - (Math.PI / 4), {x: 1627.3856975381009, y: 695.5216881594373});
+        //Funciones.initEnemigo(this, (Math.PI / 2) - (Math.PI / 4), {x: 167.3856975381009, y: 165.5216881594373});
+        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397.3856975381009, y: 225.5216881594373});
 
         Funciones.initInputs(this);
         Funciones.initBordes(this);
@@ -52,10 +53,16 @@ class Nivel_2 extends Phaser.Scene {
             enemigos.forEach(enemigo => {
                 this.physics.add.collider(enemigo, obstaculo, Funciones.rotarEnemigo, null, this);
             });
+            enemigos_grandes.forEach(enemigo => {
+                this.physics.add.collider(enemigo, obstaculo, Funciones.rotarEnemigoGrande, null, this);
+            });
         });
 
         enemigos.forEach(enemigo => {
             this.physics.add.collider(pelota, enemigo, Funciones.patearEnemigo, null, this);
+        });
+        enemigos_grandes.forEach(enemigo => {
+            this.physics.add.collider(pelota, enemigo, Funciones.patearEnemigoGrande, null, this);
         });
     }
 
