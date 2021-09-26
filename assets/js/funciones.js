@@ -485,7 +485,7 @@ class Funciones {
     static arbitro_izquierda(scene, nivel_siguiente = "nivel_3") {
         let lvl_nuevo = scene.add.rectangle(30, 400, 58, 243, 0xffffff).setOrigin(0, 0);
         let lvl_obj = scene.physics.add.existing(lvl_nuevo);
-        lvl_nuevo.visible = true;
+        lvl_nuevo.visible = false;
         lvl_nuevo.lvl_siguiente = nivel_siguiente;
         lvl_nuevo.body.moves = false;
         scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
@@ -500,7 +500,7 @@ class Funciones {
     static arbitro_derecha(scene, nivel_siguiente = "nivel_3") {
         let lvl_nuevo = scene.add.rectangle(1820, 432, 74, 193, 0xffffff).setOrigin(0, 0);
         let lvl_obj = scene.physics.add.existing(lvl_nuevo);
-        lvl_nuevo.visible = true;
+        lvl_nuevo.visible = false;
         lvl_nuevo.lvl_siguiente = nivel_siguiente;
         lvl_nuevo.body.moves = false;
         scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
@@ -515,7 +515,7 @@ class Funciones {
     static arbitro_abajo(scene, nivel_siguiente = "nivel_3") {
         let lvl_nuevo = scene.add.rectangle(844, 983, 240,  78, 0xffffff).setOrigin(0, 0);
         let lvl_obj = scene.physics.add.existing(lvl_nuevo);
-        lvl_nuevo.visible = true;
+        lvl_nuevo.visible = false;
         lvl_nuevo.lvl_siguiente = nivel_siguiente;
         lvl_nuevo.body.moves = false;
         scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
