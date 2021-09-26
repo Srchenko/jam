@@ -9,7 +9,7 @@ class Nivel_3 extends Phaser.Scene {
 
         sceneGlobal = this;
 
-        this.add.image(config.width / 2, config.height / 2, "segunda_etapa");
+        this.add.image(config.width / 2, config.height / 2, this.sys.config);
 
         Funciones.initJugador(this);
         Funciones.initPelota(this);
@@ -21,7 +21,8 @@ class Nivel_3 extends Phaser.Scene {
 
         this.initColliders();
     
-        Funciones.arbitro_arriba(this, "nivel_3");
+        Funciones.arbitro_derecha(this, "nivel_5");
+        Funciones.arbitro_abajo(this, "nivel_2");
     }
 
     update(time, delta){

@@ -15,6 +15,10 @@ class Preloads extends Phaser.Scene {
 
         this.load.spritesheet('no_puerta', 'assets/images/no_puerta.png', { frameWidth: 32, frameHeight: 32 });
 
+        for(let i = 0; i < 15; i++) { 
+            this.load.image(`nivel_${i+1}`, `assets/images/Fondo ${i+1}.png`);
+        }
+
         // this.load.audio('multitud', 'assets/sounds/multitud.ogg');
         // this.load.audio('emocion', 'assets/sounds/emocion.ogg');
         // this.load.audio('patada', 'assets/sounds/patada.ogg');
@@ -59,6 +63,6 @@ class Preloads extends Phaser.Scene {
             repeat: 0
         });
 
-        this.scene.start('nivel_1');
+        this.scene.start('tunel');
     }
 }

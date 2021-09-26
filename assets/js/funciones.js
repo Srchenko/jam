@@ -173,6 +173,7 @@ class Funciones {
     }
 
     static initJugador(scene) {
+        enemigos_vivos = 0;
         jugador = scene.physics.add
             .sprite(config.width / 2, config.height, "personaje")
             .setCollideWorldBounds(true)
@@ -347,10 +348,10 @@ class Funciones {
 
     static initBordes(scene) {
         let bordes = scene.physics.add.group();
-        bordes.create(101, 101, "vertical").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
-        bordes.create(1821, 101, "vertical").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
-        bordes.create(101, 101, "horizontal").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
-        bordes.create(101, 981, "horizontal").setOrigin(0).refreshBody().setVisible(true).setImmovable(true);
+        bordes.create(101, 101, "vertical").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
+        bordes.create(1821, 101, "vertical").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
+        bordes.create(101, 101, "horizontal").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
+        bordes.create(101, 981, "horizontal").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
         bordes.name = "bordes";
 
         obstaculos.push(bordes);

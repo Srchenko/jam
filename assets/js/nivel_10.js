@@ -1,6 +1,6 @@
-class Nivel_2 extends Phaser.Scene {
+class Nivel_10 extends Phaser.Scene {
     constructor() {
-        super("nivel_2");
+        super("nivel_10");
     }
 
     create(){
@@ -20,10 +20,10 @@ class Nivel_2 extends Phaser.Scene {
         Funciones.initBordes(this);
 
         this.initColliders();
-    
-        Funciones.arbitro_arriba(this, "nivel_3");
-        Funciones.arbitro_derecha(this, "nivel_4");
-        Funciones.arbitro_abajo(this, "nivel_1");
+        
+        Funciones.arbitro_arriba(this, "nivel_11");
+        Funciones.arbitro_abajo(this, "nivel_7");
+        Funciones.arbitro_izquierda(this, "nivel_9");
     }
 
     update(time, delta){
