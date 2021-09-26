@@ -19,6 +19,24 @@ class Interfaz extends Phaser.Scene {
         sprintBar.bar = this.add.sprite(20, 20, 'barrita').setOrigin(0, 0).setScale(5);
         sprintBar.bar.alpha = 0.9;
 
+        this.input.keyboard.on('keydown-' + 'X', function (event) { progreso_del_juego = {
+            nivel_1: 1,
+            nivel_2: 1,
+            nivel_3: 1,
+            nivel_4: 1,
+            nivel_5: 1,
+            nivel_6: 1,
+            nivel_7: 1,
+            nivel_8: 1,
+            nivel_9: 1,
+            nivel_10: 1,
+            nivel_11: 1,
+            nivel_12: 1,
+            nivel_13: 1,
+            nivel_14: 1,
+            nivel_15: 1
+        }; });
+
         // BORRAR TODO ESTO PARA EL ENTREGAR.
         this.input.on('pointerup', function(pointer){
             var touchX = pointer.x;

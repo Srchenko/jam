@@ -8,6 +8,15 @@ class Preloads extends Phaser.Scene {
         this.load.image('segunda_etapa', 'assets/images/segunda_etapa.png');
         this.load.image('horizontal', 'assets/images/horizontal.png');
         this.load.image('vertical', 'assets/images/vertical.png');
+
+        this.load.image('copa_america', 'assets/images/copa_america.png');
+        this.load.image('copa_libertadores', 'assets/images/copa_libertadores.png');
+        this.load.image('copa_mundo', 'assets/images/copa_mundo.png');
+
+        this.load.spritesheet('copa_america_spritesheet', 'assets/images/copa_america_spritesheet.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('copa_libertadores_spritesheet', 'assets/images/copa_libertadores_spritesheet.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('copa_mundo_spritesheet', 'assets/images/copa_mundo_spritesheet.png', { frameWidth: 32, frameHeight: 32 });
+
         this.load.spritesheet('personaje', 'assets/images/personaje.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('enemigo_1', 'assets/images/enemigo_1.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('pelota', 'assets/images/pelota.png', { frameWidth: 32, frameHeight: 32 });

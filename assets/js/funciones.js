@@ -22,6 +22,13 @@ class Funciones {
             y: y,
             duration: 1500,
             ease: 'Power1',
+            onStart: () => {
+                pelota.anims.resume();
+                pelota.anims.play("pelota_gira", true);
+            },
+            onComplete: () => {
+                pelota.anims.pause();
+            }
         }));
 
         //tweenTemp.stop();
@@ -52,6 +59,13 @@ class Funciones {
                 y: y,
                 duration: 1500,
                 ease: 'Power1',
+                onStart: () => {
+                    pelota.anims.resume();
+                    pelota.anims.play("pelota_gira", true);
+                },
+                onComplete: () => {
+                    pelota.anims.pause();
+                }
             }));
 
             //tweenTemp.stop();
@@ -91,8 +105,13 @@ class Funciones {
                 y: y,
                 duration: 1000,
                 ease: 'Power1',
+                onStart: () => {
+                    pelota.anims.resume();
+                    pelota.anims.play("pelota_gira", true);
+                },
                 onComplete: () => {
                     dominio_de_la_pelota = "nadie";
+                    pelota.anims.pause();
                 }
             }));
 
@@ -101,13 +120,15 @@ class Funciones {
             //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
             //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
         }else if (dominio_de_la_pelota == "player") {
-            console.log("lo fajaste");
+            enemies.setVelocity(0,0);
+            enemies.destroy();
+            enemigos_vivos--;
         }
     }
 
     static patearEnemigoGrande(pelota, enemies) {
         if (dominio_de_la_pelota != "player") {
-            enemigo.setVelocity(0,0);
+            enemies.setVelocity(0,0);
             dominio_de_la_pelota = "enemigo";
             contador_dominio_pelota = 0;
             //sceneGlobal.sound.play("patada");
@@ -132,19 +153,24 @@ class Funciones {
                 y: y,
                 duration: 1000,
                 ease: 'Power1',
+                onStart: () => {
+                    pelota.anims.resume();
+                    pelota.anims.play("pelota_gira", true);
+                },
                 onComplete: () => {
+                    pelota.anims.pause();
                     dominio_de_la_pelota = "nadie";
                 }
             }));
 
-            enemigo.anims.pause();
+            enemies.anims.pause();
             new Promise(function(resolve, reject) {
                 resolve(
                     setTimeout(function() {
-                        let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y) + Phaser.Math.FloatBetween(-.3, .3);
-                        enemigo.rotation = angle + (Math.PI/2);
-                        enemigo.anims.resume();
-                        enemigo.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
+                        let angle = Phaser.Math.Angle.Between(enemies.x, enemies.y, pelota.x, pelota.y) + Phaser.Math.FloatBetween(-.3, .3);
+                        enemies.rotation = angle + (Math.PI/2);
+                        enemies.anims.resume();
+                        enemies.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
                     }, 4000)
                 )
             });
@@ -154,14 +180,14 @@ class Funciones {
             //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
             //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
         }else if (dominio_de_la_pelota == "player") {
-            enemigo.setVelocity(0,0);
-            enemigo.destroy();
+            enemies.setVelocity(0,0);
+            enemies.destroy();
             enemigos_vivos--;
         }
     }
 
-    static initPelota(scene) {
-        pelota = scene.physics.add.sprite(config.width / 2, config.height / 2, "pelota")
+    static initPelota(scene, pos = {x: config.width / 2, y: config.height / 2}) {  
+        pelota = scene.physics.add.sprite(pos.x, pos.y, "pelota")
             .setScale(4)
             .setCollideWorldBounds(true)
             .setCircle(8)
@@ -173,48 +199,55 @@ class Funciones {
     }
 
     static initJugador(scene) {
+        sceneGlobal.emitter=EventDispatcher.getInstance();
+        sceneGlobal.emitter.off("abrir_puertas");
+
         enemigos_vivos = 0;
         jugador = scene.physics.add
-            .sprite(config.width / 2, config.height, "personaje")
+            .sprite(posicion_inicio.x, posicion_inicio.y, "personaje")
             .setCollideWorldBounds(true)
             .setScale(4);
     }
 
     static initEnemigo(scene, rotacion, posicion) {
-        enemigo = scene.physics.add
-            .sprite(posicion.x, posicion.y, "enemigo_1")
-            .setCollideWorldBounds(true)
-            .setScale(3);
-        enemigo.rotation = rotacion;
-        enemigo.setVelocity(300,-300);
-        enemigo.setBounce(1);
-        enemigo.anims.play("enemigo_moverse");
-        enemigos.push(enemigo);
-        enemigos_vivos++;
+        if (progreso_del_juego[scene.sys.config] == 0) {
+            enemigo = scene.physics.add
+                .sprite(posicion.x, posicion.y, "enemigo_1")
+                .setCollideWorldBounds(true)
+                .setScale(3);
+            enemigo.rotation = rotacion;
+            enemigo.setVelocity(300,-300);
+            enemigo.setBounce(1);
+            enemigo.anims.play("enemigo_moverse");
+            enemigos.push(enemigo);
+            enemigos_vivos++;
+        }
     }
 
     static initEnemigoGrandote(scene, rotacion, posicion) {
-        enemigo = scene.physics.add
-            .sprite(posicion.x, posicion.y, "enemigo_1")
-            .setCollideWorldBounds(true)
-            .setScale(5);
-        let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y);
-        enemigo.rotation = angle + (Math.PI/2);
-        enemigo.setBounce(1);
-        enemigo.anims.play("enemigo_moverse");
-        enemigo.anims.pause();
-        new Promise(function(resolve, reject) {
-            resolve(
-                setTimeout(function() {
-                    let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y);
-                    enemigo.rotation = angle + (Math.PI/2);
-                    enemigo.anims.resume();
-                    enemigo.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
-                }, 4000)
-            )
-        });
-        enemigos_grandes.push(enemigo);
-        enemigos_vivos++;
+        if (progreso_del_juego[scene.sys.config] == 0) {
+            let enemigo = scene.physics.add
+                .sprite(posicion.x, posicion.y, "enemigo_1")
+                .setCollideWorldBounds(true)
+                .setScale(5);
+            let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y);
+            enemigo.rotation = angle + (Math.PI/2);
+            enemigo.setBounce(1);
+            enemigo.anims.play("enemigo_moverse");
+            enemigo.anims.pause();
+            new Promise(function(resolve, reject) {
+                resolve(
+                    setTimeout(function() {
+                        let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y);
+                        enemigo.rotation = angle + (Math.PI/2);
+                        enemigo.anims.resume();
+                        enemigo.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
+                    }, 4000)
+                )
+            });
+            enemigos_grandes.push(enemigo);
+            enemigos_vivos++;
+        }
     }
 
     static initInputs(scene) {
@@ -257,7 +290,7 @@ class Funciones {
             this.emitter.emit("abrir_puertas")
         }
 
-        if (contador_dominio_pelota >= 3) {
+        if (contador_dominio_pelota >= 4) {
             dominio_de_la_pelota = "nadie";
         }else {
             contador_dominio_pelota += delta*.005;
@@ -346,17 +379,17 @@ class Funciones {
         
     }
 
-    static initBordes(scene) {
+    static initBordes(scene, offsets_fuera={derecha:{x:0, y:0}, izquierda:{x:0, y:0}}) {
         let bordes = scene.physics.add.group();
-        bordes.create(101, 101, "vertical").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
-        bordes.create(1821, 101, "vertical").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
+        bordes.create(101 + offsets_fuera.izquierda.x, 101 + offsets_fuera.izquierda.y, "vertical").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
+        bordes.create(1821 + offsets_fuera.derecha.x, 101 + offsets_fuera.derecha.y, "vertical").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
         bordes.create(101, 101, "horizontal").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
         bordes.create(101, 981, "horizontal").setOrigin(0).refreshBody().setVisible(false).setImmovable(true);
         bordes.name = "bordes";
 
-        obstaculos.push(bordes);
+        fuera_linea_offsets = offsets_fuera;
 
-        console.log(bordes);
+        obstaculos.push(bordes);
 
         scene.physics.add.collider(bordes, pelota, this.fueraLinea, null, scene);
         //scene.physics.add.collider(bordes, enemigo, this.rotarEnemigo, null, scene);
@@ -388,14 +421,14 @@ class Funciones {
         let ang_rebote = Phaser.Math.Angle.Between(enemis.x, enemis.y, pelota.x, pelota.y);
         enemis.setVelocity(0);
         enemis.rotation = ang_rebote + (Math.PI/2);
-        enemigo.anims.pause();
+        enemis.anims.pause();
         new Promise(function(resolve, reject) {
             resolve(
                 setTimeout(function() {
-                    let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y) + Phaser.Math.FloatBetween(-.3, .3);
-                    enemigo.rotation = angle + (Math.PI/2);
-                    enemigo.anims.resume();
-                    enemigo.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
+                    let angle = Phaser.Math.Angle.Between(enemis.x, enemis.y, pelota.x, pelota.y) + Phaser.Math.FloatBetween(-.3, .3);
+                    enemis.rotation = angle + (Math.PI/2);
+                    enemis.anims.resume();
+                    enemis.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
                 }, 4000)
             )
         });
@@ -413,8 +446,8 @@ class Funciones {
         //pelotis.tween.restart();
         tweenTemp.forEach(t => t.stop());
         // pelotis.tween.remove();
-        if(pelotis.x > config.width/2){
-            var _= sceneGlobal.add.sprite(50,config.height/2,"personaje_fuera").setScale(4);
+        if(pelotis.x > (config.width/2) + ((fuera_linea_offsets.derecha.x + fuera_linea_offsets.izquierda.x)/4)){
+            var _= sceneGlobal.add.sprite(50 + fuera_linea_offsets.izquierda.x,(config.height/2) + fuera_linea_offsets.izquierda.y,"personaje_fuera").setScale(4);
             _.rotation = Math.PI/2;
             _.anims.play("personaje_fuera", false);
             new Promise(
@@ -424,23 +457,29 @@ class Funciones {
                         resolve();
                     }, 2000);
             });
-            let angulo = Phaser.Math.Angle.Between(pelotis.x, pelotis.y, 650, config.height/2);
+            let velocidad = 650 - Math.abs(((fuera_linea_offsets.derecha.x + fuera_linea_offsets.izquierda.x)/16));
+            pelotis.x = (250) + fuera_linea_offsets.izquierda.x;
+            pelotis.y = (config.height/2) + fuera_linea_offsets.izquierda.y;
+            let angulo = Phaser.Math.Angle.Between(pelotis.x, pelotis.y, velocidad + fuera_linea_offsets.izquierda.x, (config.height/2) + fuera_linea_offsets.izquierda.y);
             pelotis.angle = angulo - 90;
-            pelotis.x = 250;
-            pelotis.y = config.height/2;
             tweenTemp.push(sceneGlobal.tweens.add({
                 targets: pelotis,
                 paused: false,
-                x: 650,
-                y: config.height/2,
+                x: velocidad + fuera_linea_offsets.izquierda.x,
+                y: (config.height/2) + fuera_linea_offsets.izquierda.y,
                 duration: 1500,
                 ease: 'Power1',
+                onStart: () => {
+                    pelota.anims.resume();
+                    pelota.anims.play("pelota_gira", true);
+                },
                 onComplete: () => {
+                    pelota.anims.pause();
                     dominio_de_la_pelota = "nadie";
                 }
             }));
         }else {
-            var _= sceneGlobal.add.sprite(config.width - 50,config.height/2,"personaje_fuera").setScale(4);
+            var _= sceneGlobal.add.sprite((config.width - 50) + fuera_linea_offsets.derecha.x,(config.height/2) + fuera_linea_offsets.derecha.y,"personaje_fuera").setScale(4);
             _.rotation = -Math.PI/2;
             _.anims.play("personaje_fuera", false);
             new Promise(
@@ -450,87 +489,150 @@ class Funciones {
                         resolve();
                     }, 2000);
             });
-            let angulo = Phaser.Math.Angle.Between(pelotis.x, pelotis.y, config.width - 650, config.height/2);
+            pelotis.x = (config.width - 250) + fuera_linea_offsets.derecha.x;
+            pelotis.y = (config.height/2) + fuera_linea_offsets.derecha.y;
+            let velocidad = 650 - Math.abs(((fuera_linea_offsets.derecha.x + fuera_linea_offsets.izquierda.x)/16));
+            let angulo = Phaser.Math.Angle.Between(pelotis.x, pelotis.y, (config.width - velocidad) + fuera_linea_offsets.derecha.x, (config.height/2) + fuera_linea_offsets.derecha.y);
             pelotis.angle = angulo - 90;
-            pelotis.x = config.width - 250;
-            pelotis.y = config.height/2;
             tweenTemp.push(sceneGlobal.tweens.add({
                 targets: pelotis,
                 paused: false,
-                x: config.width - 650,
-                y: config.height/2,
+                x: (config.width - velocidad) + fuera_linea_offsets.derecha.x,
+                y: (config.height/2) + fuera_linea_offsets.derecha.y,
                 duration: 1500,
                 ease: 'Power1',
+                onStart: () => {
+                    pelota.anims.resume();
+                    pelota.anims.play("pelota_gira", true);
+                },
                 onComplete: () => {
+                    pelota.anims.pause();
                     dominio_de_la_pelota = "nadie";
                 }
             }));
         }
     }
 
-    static arbitro_arriba(scene, nivel_siguiente = "nivel_3") {
-        let lvl_nuevo = scene.add.rectangle(960, 0, 250, 60, 0xffffff);
+    static arbitro_arriba(scene, nivel_siguiente = "nivel_3", offsets = {x:0, y:0}, offset_jugador = {x:0, y:0}, copa_requerida = {req: false, copa: "copa_1"}) {
+        let lvl_nuevo = scene.add.rectangle(960 + offsets.x, 0 + offsets.y, 250, 60, 0xffffff);
         let lvl_obj = scene.physics.add.existing(lvl_nuevo);
         lvl_nuevo.visible = false;
         lvl_nuevo.lvl_siguiente = nivel_siguiente;
         lvl_nuevo.body.moves = false;
-        scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+        lvl_nuevo.posicion_inicio = {x: 960 + offset_jugador.x, y: 900 + offset_jugador.y};
 
         scene.emitter=EventDispatcher.getInstance();
-        let puerta = scene.add.sprite(960, -110, "no_puerta").setOrigin(0.5, 0).setScale(8);
+        let puerta = scene.add.sprite(960 + offsets.x, -110 + offsets.y, "no_puerta").setOrigin(0.5, 0).setScale(8);
+
+        if (copa_requerida.req) {
+            lvl_nuevo.copa_requerida = copa_requerida.copa;
+            puerta.setTint(0xff0000);
+            if (copas[copa_requerida.copa] == true) {
+                scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+            }
+        }else {
+            scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+        }
+
         scene.emitter.on('abrir_puertas', function (e) { 
-            puerta.anims.play("no_puerta", false); 
+            progreso_del_juego[scene.sys.config] = 1;
+            if (copas[copa_requerida.copa] == true || copa_requerida.req == false) {
+                puerta.anims.play("no_puerta", false); 
+            }
             enemigos_vivos = 99;
         });
     }
-    static arbitro_izquierda(scene, nivel_siguiente = "nivel_3") {
-        let lvl_nuevo = scene.add.rectangle(30, 400, 58, 243, 0xffffff).setOrigin(0, 0);
+    static arbitro_izquierda(scene, nivel_siguiente = "nivel_3", offsets = {x:0, y:0}, offset_jugador = {x:0, y:0}, copa_requerida = {req: false, copa: "copa_1"}) {
+        let lvl_nuevo = scene.add.rectangle(30 + offsets.x, 400 + offsets.y, 58, 243, 0xffffff).setOrigin(0, 0);
         let lvl_obj = scene.physics.add.existing(lvl_nuevo);
         lvl_nuevo.visible = false;
         lvl_nuevo.lvl_siguiente = nivel_siguiente;
         lvl_nuevo.body.moves = false;
-        scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
-
+        lvl_nuevo.posicion_inicio = {x: 1740 + offset_jugador.x, y: 540 + offset_jugador.y};
+        
         sceneGlobal.emitter=EventDispatcher.getInstance();
-        let puerta = sceneGlobal.add.sprite(40, config.height/2, "no_puerta").setOrigin(.5, .5).setScale(8).setRotation(-Math.PI/2);
-        sceneGlobal.emitter.on('abrir_puertas', function (e) { 
-            puerta.anims.play("no_puerta", false); 
+        let puerta = sceneGlobal.add.sprite(40 + offsets.x, config.height/2 + offsets.y, "no_puerta").setOrigin(.5, .5).setScale(8).setRotation(-Math.PI/2);
+
+        if (copa_requerida.req) {
+            lvl_nuevo.copa_requerida = copa_requerida.copa;
+            puerta.setTint(0xff0000);
+            if (copas[copa_requerida.copa] == true) {
+                scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+            }
+        }else {
+            scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+        }
+
+        sceneGlobal.emitter.on('abrir_puertas', function (e) {
+            progreso_del_juego[scene.sys.config] = 1; 
+            if (copas[copa_requerida.copa] == true || copa_requerida.req == false) {
+                puerta.anims.play("no_puerta", false); 
+            }
             enemigos_vivos = 99;
         });
     }
-    static arbitro_derecha(scene, nivel_siguiente = "nivel_3") {
-        let lvl_nuevo = scene.add.rectangle(1820, 432, 74, 193, 0xffffff).setOrigin(0, 0);
+    static arbitro_derecha(scene, nivel_siguiente = "nivel_3", offsets = {x:0, y:0}, offset_jugador = {x:0, y:0}, copa_requerida = {req: false, copa: "copa_1"}) {
+        let lvl_nuevo = scene.add.rectangle(1820 + offsets.x, 432 + offsets.y, 74, 193, 0xffffff).setOrigin(0, 0);
         let lvl_obj = scene.physics.add.existing(lvl_nuevo);
         lvl_nuevo.visible = false;
         lvl_nuevo.lvl_siguiente = nivel_siguiente;
         lvl_nuevo.body.moves = false;
-        scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+        lvl_nuevo.posicion_inicio = {x: 180 + offset_jugador.x, y: 540 + offset_jugador.y};
 
         sceneGlobal.emitter=EventDispatcher.getInstance();
-        let puerta = sceneGlobal.add.sprite(config.width - 40, config.height/2, "no_puerta").setOrigin(.5, .5).setScale(8).setRotation(Math.PI/2);
+        let puerta = sceneGlobal.add.sprite((config.width - 40) + offsets.x, config.height/2 + offsets.y, "no_puerta").setOrigin(.5, .5).setScale(8).setRotation(Math.PI/2);
+
+        if (copa_requerida.req) {
+            lvl_nuevo.copa_requerida = copa_requerida.copa;
+            puerta.setTint(0xff0000);
+            if (copas[copa_requerida.copa] == true) {
+                scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+            }
+        }else {
+            scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+        }
+
         sceneGlobal.emitter.on('abrir_puertas', function (e) { 
-            puerta.anims.play("no_puerta", false); 
+            progreso_del_juego[scene.sys.config] = 1;
+            if (copas[copa_requerida.copa] == true || copa_requerida.req == false) {
+                puerta.anims.play("no_puerta", false); 
+            } 
             enemigos_vivos = 99;
         });
     }
-    static arbitro_abajo(scene, nivel_siguiente = "nivel_3") {
-        let lvl_nuevo = scene.add.rectangle(844, 983, 240,  78, 0xffffff).setOrigin(0, 0);
+    static arbitro_abajo(scene, nivel_siguiente = "nivel_3", offsets = {x:0, y:0}, offset_jugador = {x:0, y:0}, copa_requerida = {req: false, copa: "copa_1"}) {
+        let lvl_nuevo = scene.add.rectangle(844 + offsets.x, 983 + offsets.y, 240,  78, 0xffffff).setOrigin(0, 0);
         let lvl_obj = scene.physics.add.existing(lvl_nuevo);
         lvl_nuevo.visible = false;
         lvl_nuevo.lvl_siguiente = nivel_siguiente;
+        lvl_nuevo.posicion_inicio = {x: 960 + offset_jugador.x, y: 180 + offset_jugador.y};
         lvl_nuevo.body.moves = false;
-        scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
 
         sceneGlobal.emitter=EventDispatcher.getInstance();
-        let puerta = sceneGlobal.add.sprite(960, config.height - 40, "no_puerta").setOrigin(.5, .5).setScale(8).setRotation(-Math.PI);
+        let puerta = sceneGlobal.add.sprite(960 + offsets.x, (config.height - 40) + offsets.y, "no_puerta").setOrigin(.5, .5).setScale(8).setRotation(-Math.PI);
+
+        if (copa_requerida.req) {
+            lvl_nuevo.copa_requerida = copa_requerida.copa;
+            puerta.setTint(0xff0000);
+            if (copas[copa_requerida.copa] == true) {
+                scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+            }
+        }else {
+            scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
+        }
+
         sceneGlobal.emitter.on('abrir_puertas', function (e) { 
-            puerta.anims.play("no_puerta", false); 
+            progreso_del_juego[scene.sys.config] = 1;
+            if (copas[copa_requerida.copa] == true || copa_requerida.req == false) {
+                puerta.anims.play("no_puerta", false); 
+            }
             enemigos_vivos = 99;
         });
     }
 
     static cambiarNivel(uno, dos){
         if (enemigos_vivos != 99) return;
+        posicion_inicio = dos.posicion_inicio;
         this.scene.start(dos.lvl_siguiente);
     }
 }

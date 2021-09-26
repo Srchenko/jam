@@ -13,8 +13,7 @@ class Nivel_1 extends Phaser.Scene {
 
         Funciones.initJugador(this);
         Funciones.initPelota(this);
-        
-        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397.3856975381009, y: 225.5216881594373});
+        Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 1367, y: 225});
 
         Funciones.initInputs(this);
         Funciones.initBordes(this);
@@ -22,7 +21,8 @@ class Nivel_1 extends Phaser.Scene {
         this.initColliders();
     
         Funciones.arbitro_arriba(this, "nivel_2");
-        Funciones.arbitro_izquierda(this, "nivel_6");
+        Funciones.arbitro_izquierda(this, "nivel_6", {x: 0, y: 0}, {x: 0, y: 0}, {req: true, copa: "copa_1"});
+        Funciones.arbitro_abajo(this, "tunel");
     }
 
     update(time, delta){

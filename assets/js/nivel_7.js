@@ -14,7 +14,7 @@ class Nivel_7 extends Phaser.Scene {
         Funciones.initJugador(this);
         Funciones.initPelota(this);
         
-        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397.3856975381009, y: 225.5216881594373});
+        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397, y: 225});
 
         Funciones.initInputs(this);
         Funciones.initBordes(this);
@@ -36,10 +36,9 @@ class Nivel_7 extends Phaser.Scene {
 
     initColliders() {
         this.physics.add.collider(pelota, jugador, Funciones.patear, null, this);
+        this.physics.add.existing(obstaculos[obstaculos.push(this.add.rectangle(181.56028368794327, 813.9952718676122, 270.8274231678487,  99.85815602836885, 0xffffff).setOrigin(0, 0).setAlpha(0)) - 1], true);
+        this.physics.add.existing(obstaculos[obstaculos.push(this.add.rectangle(1494.8463356973996, 128.60520094562648, 282.93144208037825,  98.34515366430259, 0xffffff).setOrigin(0, 0).setAlpha(0)) - 1], true);
         
-        this.physics.add.existing(obstaculos[obstaculos.push(this.add.rectangle(1627.3856975381009, 695.5216881594373, 110.29308323563896,  281.3599062133645, 0xffffff).setOrigin(0, 0).setAlpha(0)) - 1], true);
-        this.physics.add.existing(obstaculos[obstaculos.push(this.add.rectangle(166.56506447831185, 130.55099648300117, 92.28604923798355,  274.6072684642438, 0xffffff).setOrigin(0, 0).setAlpha(0)) - 1], true);
-
         obstaculos.forEach(obstaculo => {
             if (obstaculo.name != "bordes") {
                 this.physics.add.collider(pelota, obstaculo, Funciones.rebotaObstaculo, null, this);
