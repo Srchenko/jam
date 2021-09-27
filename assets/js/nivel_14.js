@@ -20,9 +20,11 @@ class Nivel_14 extends Phaser.Scene {
         Funciones.initBordes(this);
 
         this.initColliders();
+
+        Interfaz.mostrar_dialogo_copa_mundo();
         
         Funciones.arbitro_izquierda(this, "nivel_13");
-        Funciones.arbitro_derecha(this, "nivel_15");
+        Funciones.arbitro_derecha(this, "nivel_15", {x: 0, y: 0}, {x: 0, y: 0}, {req: true, copa:"copa_3"});
     }
 
     update(time, delta){

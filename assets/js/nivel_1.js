@@ -19,6 +19,8 @@ class Nivel_1 extends Phaser.Scene {
         Funciones.initBordes(this);
 
         this.initColliders();
+
+        Interfaz.mostrar_dialogo_copa_libertadores();
     
         Funciones.arbitro_arriba(this, "nivel_2");
         Funciones.arbitro_izquierda(this, "nivel_6", {x: 0, y: 0}, {x: 0, y: 0}, {req: true, copa: "copa_1"});

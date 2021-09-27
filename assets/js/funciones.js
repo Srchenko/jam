@@ -2,6 +2,160 @@ let tweenTemp = [];
 let pelotaPromise;
 
 class Funciones {
+    static patearJefe(pelota, jefe) {
+        if (dominio_de_la_pelota != "enemigo") {
+            
+            jefe.anims.play("jefe_ataja", true);
+            if (dominio_de_la_pelota == "player" && vida_jefe > 0) {vida_jefe -= 10;}
+            if (vida_jefe > 0) dominio_de_la_pelota = "enemigo";
+            console.log(vida_jefe);
+            contador_dominio_pelota = 0;
+            //sceneGlobal.sound.play("patada");
+            //sceneGlobal.sound.play("emocion");
+            let angulo;
+
+            angulo = Phaser.Math.Angle.Between(jugador.x, jugador.y, pelota.x, pelota.y);
+
+            let x = pelota.x + Math.cos(angulo) * -700; 
+            let y = pelota.y + Math.sin(angulo) * -700;
+
+            pelota.rotation = angulo - (Math.PI/2);
+
+            tweenTemp.push(sceneGlobal.tweens.add({
+                targets: pelota,
+                paused: false,
+                x: x,
+                y: y,
+                duration: 1500,
+                ease: 'Power1',
+                onStart: () => {
+                    pelota.anims.resume();
+                    pelota.anims.play("pelota_gira", true);
+                },
+                onComplete: () => {
+                    pelota.anims.pause();
+                }
+            }));
+        }
+    }
+
+    static gol(pelota, gol) {
+        if (dominio_de_la_pelota == "player") {
+            sceneGlobal.scene.start("final");
+        }
+    }
+
+    static patearEnemigoX(pelota, enemigo) {
+        if (dominio_de_la_pelota != "player") {
+            duo_panico = false;
+            dominio_de_la_pelota = "enemigo"
+            contador_dominio_pelota = 0;
+            let angulo;
+            if (!omuerto) {
+                angulo = Phaser.Math.Angle.Between(enemigos_duo.o.x, enemigos_duo.o.y, enemigo.x, enemigo.y);
+            }else {
+                angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, enemigo.x, enemigo.y);
+            }
+
+            let x = pelota.x + Math.cos(angulo) * -1300; 
+            let y = pelota.y + Math.sin(angulo) * -1300;
+
+            pelota.rotation = angulo - (Math.PI/2);
+
+            tweenTemp.push(sceneGlobal.tweens.add({
+                targets: pelota,
+                paused: false,
+                x: x,
+                y: y,
+                duration: 1500,
+                ease: 'Power1',
+                onStart: () => {
+                    pelota.anims.resume();
+                    pelota.anims.play("pelota_gira", true);
+                },
+                onComplete: () => {
+                    pelota.anims.pause();
+                }
+            }));
+            
+            if (!omuerto) {
+                sceneGlobal.tweens.add({
+                    targets: enemigos_duo.x,
+                    x: Phaser.Math.Between(980, 1700),
+                    y: Phaser.Math.Between(pelota.y - 50, pelota.y + 50),
+                    duration: 1500,
+                    ease: 'Linear',
+                    onStart: () => {
+                        enemigos_duo.x.anims.play("enemigo_2_2", true);
+                    },
+                    onUpdate: () => {
+                        enemigos_duo.x.rotation = Phaser.Math.Angle.Between(enemigos_duo.x.x, enemigos_duo.x.y, enemigos_duo.o.x, enemigos_duo.o.y) + Math.PI/2;
+                    }
+                });
+            }
+        }else {
+            enemigo.setVelocity(0,0);
+            enemigo.destroy();
+            xmuerto = true;
+            enemigos_vivos--;
+        }
+    }
+
+    static patearEnemigoO(pelota, enemigo) {
+        if (dominio_de_la_pelota != "player") {
+            duo_panico = false;
+            dominio_de_la_pelota = "nadie"
+            let angulo;
+            if (!xmuerto) {
+                angulo = Phaser.Math.Angle.Between(enemigos_duo.x.x, enemigos_duo.x.y, enemigo.x, enemigo.y);
+            }else {
+                angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, enemigo.x, enemigo.y);
+            }
+
+            let x = pelota.x + Math.cos(angulo) * -1300; 
+            let y = pelota.y + Math.sin(angulo) * -1300;
+
+            pelota.rotation = angulo - (Math.PI/2);
+
+            tweenTemp.push(sceneGlobal.tweens.add({
+                targets: pelota,
+                paused: false,
+                x: x,
+                y: y,
+                duration: 1500,
+                ease: 'Power1',
+                onStart: () => {
+                    pelota.anims.resume();
+                    pelota.anims.play("pelota_gira", true);
+                },
+                onComplete: () => {
+                    pelota.anims.pause();
+                }
+            }));
+
+            if (!xmuerto) {
+                sceneGlobal.tweens.add({
+                    targets: enemigos_duo.o,
+                    x: Phaser.Math.Between(180, 900),
+                    y: Phaser.Math.Between(pelota.y - 50, pelota.y + 50),
+                    duration: 1500,
+                    ease: 'Linear',
+                    onStart: () => {
+                        enemigos_duo.o.anims.play("enemigo_2_1", true);
+                    },
+                    onUpdate: () => {
+                        enemigos_duo.o.rotation = Phaser.Math.Angle.Between(enemigos_duo.o.x, enemigos_duo.o.y, enemigos_duo.x.x, enemigos_duo.x.y) + Math.PI/2;
+                    }
+                });
+            }
+        }else {
+            enemigo.setVelocity(0,0);
+            enemigo.destroy();
+            omuerto = true;
+            enemigos_vivos--;
+        }
+    }
+
     static rebotaObstaculo(pelota, obstaculo) {
         contador_dominio_pelota = 0;
         //sceneGlobal.sound.play("patada");
@@ -40,7 +194,8 @@ class Funciones {
     static patear(pelota, jugador) {
         if (dominio_de_la_pelota != "enemigo") {
             dominio_de_la_pelota = "player";
-            contador_dominio_pelota = 0;
+            duo_panico = true;
+            contador_dominio_pelota = ventaja;
             //sceneGlobal.sound.play("patada");
             //sceneGlobal.sound.play("emocion");
             let angulo;
@@ -73,7 +228,15 @@ class Funciones {
             //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
             //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
         }else {
-            console.log("te fajaron");
+            if (copas.copa_3) {
+                sceneGlobal.scene.start("nivel_12");
+            }else if (copas.copa_2) {
+                sceneGlobal.scene.start("nivel_8");
+            }else if (copas.copa_1) {
+                sceneGlobal.scene.start("nivel_5");
+            }else {
+                sceneGlobal.scene.start("nivel_1");
+            }
         }
     }
 
@@ -187,6 +350,7 @@ class Funciones {
     }
 
     static initPelota(scene, pos = {x: config.width / 2, y: config.height / 2}) {  
+        dominio_de_la_pelota = "nadie";
         pelota = scene.physics.add.sprite(pos.x, pos.y, "pelota")
             .setScale(4)
             .setCollideWorldBounds(true)
@@ -198,15 +362,135 @@ class Funciones {
         pelota.body.setDrag(0, 0);
     }
 
+    static initEnemigosDuo(scene) {
+        obstaculos.forEach(obstaculo => {
+            scene.physics.add.collider(enemigos_duo.x, obstaculo, this.rotarEnemigo, null, scene);
+            scene.physics.add.collider(enemigos_duo.o, obstaculo, this.rotarEnemigo, null, scene);
+        });
+        scene.physics.add.collider(pelota, enemigos_duo.x, this.patearEnemigoX, null, scene);
+        scene.physics.add.collider(pelota, enemigos_duo.o, this.patearEnemigoO, null, scene);
+
+        duo_panico = false;
+
+        enemigos_duo.o = scene.physics.add.sprite((pelota.x) - 400, pelota.y, "enemigo_2_1").setScale(4);
+        enemigos_duo.x = scene.physics.add.sprite((pelota.x) + 400, pelota.y, "enemigo_2_2").setScale(4);
+
+        enemigos_duo.o.rotation = Phaser.Math.Angle.Between(enemigos_duo.o.x, enemigos_duo.o.y, enemigos_duo.x.x, enemigos_duo.x.y) + Math.PI/2;
+        enemigos_duo.x.rotation = Phaser.Math.Angle.Between(enemigos_duo.x.x, enemigos_duo.x.y, enemigos_duo.o.x, enemigos_duo.o.y) + Math.PI/2;
+
+        scene.tweens.add({
+            targets: enemigos_duo.o,
+            x: pelota.x,
+            y: pelota.y,
+            duration: 200,
+            ease: 'Linear',
+        });
+
+        enemigos_vivos += 2;
+    }
+
+    static updateEnemigosDuo(scene, delta) {
+        //timer
+        if (duo_panico) {
+            contador_duo += delta;
+            if (contador_duo > duo_panico_contador) {
+                contador_duo = 0;
+                let ox = Phaser.Math.Between(180, 900);
+                let oy = Phaser.Math.Between(180, 900);
+                if (!omuerto) {
+                    sceneGlobal.tweens.add({
+                        targets: enemigos_duo.o,
+                        x: ox,
+                        y: oy,
+                        duration: duo_speed,
+                        ease: 'Linear',
+                        onStart: () => {
+                            enemigos_duo.o.anims.play("enemigo_2_1", true);
+                        },
+                        onUpdate: () => {
+                            enemigos_duo.o.rotation = Phaser.Math.Angle.Between(enemigos_duo.o.x, enemigos_duo.o.y, ox, oy) + Math.PI/2;
+                        }
+                    });
+                }else {
+                    if(!xmuerto) {
+                        console.log("omuerto. xvivo")
+                        duo_panico_contador = 200;
+                        contador_duo = 0;
+                        duo_speed = 400;
+                        enemigos_duo.x.angle += 1;
+                    }
+                }
+                let xx = Phaser.Math.Between(980, 1700);
+                let xy = Phaser.Math.Between(180, 900);
+                if (!xmuerto) {
+                    sceneGlobal.tweens.add({
+                        targets: enemigos_duo.x,
+                        x: xx,
+                        y: xy,
+                        duration: duo_speed,
+                        ease: 'Linear',
+                        onStart: () => {
+                            enemigos_duo.x.anims.play("enemigo_2_2", true);
+                        },
+                        onUpdate: () => {
+                            enemigos_duo.x.rotation = Phaser.Math.Angle.Between(enemigos_duo.x.x, enemigos_duo.x.y, xx, xy) + Math.PI/2;
+                        }
+                    });
+                }else {
+                    if(!omuerto) {
+                        console.log("xvivo. omuerto")
+                        duo_panico_contador = 200;
+                        contador_duo = 0;
+                        duo_speed = 400;
+                        enemigos_duo.o.angle += 1;
+                    }
+                }
+            }
+        }
+    }
+
     static initJugador(scene) {
+        ventaja = 0;
         sceneGlobal.emitter=EventDispatcher.getInstance();
         sceneGlobal.emitter.off("abrir_puertas");
+
+        Interfaz.ocultar_todo();
 
         enemigos_vivos = 0;
         jugador = scene.physics.add
             .sprite(posicion_inicio.x, posicion_inicio.y, "personaje")
             .setCollideWorldBounds(true)
             .setScale(4);
+    }
+
+    static initJefe(scene) {
+        jefe = scene.physics.add.sprite(config.width - 200, config.height / 2, "jefe").setRotation(Math.PI/2);
+        jefe.setScale(.25);
+        jefe.setSize(jefe.height, jefe.width);
+    }
+
+    static updateJefe(scene) {
+        if (vida_jefe > 0) {
+            let random = 0;
+            if (vida_jefe < 50) {random = Phaser.Math.FloatBetween(-149, 149)}
+            if (pelota.x > (config.width - 600)) {
+                scene.tweens.add({
+                    targets: jefe,
+                    x: (config.width - 200) + random,
+                    y: pelota.y + random,
+                    duration: 500 / (vida_jefe/100),
+                    ease: 'Power1',
+                    onStart: () => {    
+                        jefe.anims.play("jefe_move", true);
+                    },
+                    onComplete: () => {
+                        jefe.anims.play("jefe_quieto", true);
+                    }
+                });
+            }
+        }else {
+            jefe.anims.play("jefe_quieto", true);
+        }
     }
 
     static initEnemigo(scene, rotacion, posicion) {

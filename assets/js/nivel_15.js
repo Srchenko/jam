@@ -19,9 +19,15 @@ class Nivel_15 extends Phaser.Scene {
         Funciones.initInputs(this);
         Funciones.initBordes(this);
 
-        this.initColliders();
+        ventaja = -7;
     
         Funciones.arbitro_izquierda(this, "nivel_14");
+
+        Interfaz.mostrar_barra_vida_jefe();
+
+        Funciones.initJefe(this);
+
+        this.initColliders();
     }
 
     update(time, delta){
@@ -30,10 +36,17 @@ class Nivel_15 extends Phaser.Scene {
         Funciones.updatePelota(this, pelota);
 
         Funciones.updateEnemigo(this, enemigo);
+
+        Funciones.updateJefe(this);
     }
 
     initColliders() {
         this.physics.add.collider(pelota, jugador, Funciones.patear, null, this);
+        this.physics.add.collider(pelota, jefe, Funciones.patearJefe, null, this);
+
+        let gol = this.add.rectangle(1773.6928487690504, 144.05627198124267, 137.3036342321218,  805.8147713950761, 0xffffff).setOrigin(0, 0).setAlpha(0);
+        this.physics.add.existing(gol, true);
+        this.physics.add.collider(pelota, gol, Funciones.gol, null, this);
         
         obstaculos.forEach(obstaculo => {
             if (obstaculo.name != "bordes") {

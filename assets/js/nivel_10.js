@@ -20,6 +20,8 @@ class Nivel_10 extends Phaser.Scene {
         Funciones.initBordes(this);
 
         this.initColliders();
+
+        Interfaz.mostrar_dialogo_copa_america();
         
         Funciones.arbitro_arriba(this, "nivel_11", {x: 200, y: 0}, {x: 0, y: 0}, {req: true, copa: "copa_2"});
         Funciones.arbitro_abajo(this, "nivel_7");

@@ -10,32 +10,35 @@ class Nivel_8 extends Phaser.Scene {
         sceneGlobal = this;
 
         this.add.image(config.width / 2, config.height / 2, this.sys.config);
-        this.add.image(config.width / 2, config.height / 2, this.sys.config);
-        let copa_america = this.physics.add.sprite(400, 680, 'copa_america').setScale(10).setOrigin(0.5);
-        copa_america.setSize(10, 10);
-        this.tweens.add({
-            targets: copa_america,
-            rotation: Math.PI,
-            duration: 1000,
-            loop: -1,
-            ease: 'Linear'
-        });
-        let copa_start_y = copa_america.y;
-        this.tweens.addCounter({
-            from: -1,
-            to: 1,
-            ease: 'Linear',
-            duration: 1000,
-            repeat: -1,
-            yoyo: false,
-            onUpdate: function (tween) {
-                copa_america.y = Math.abs(tween.getValue() * 30) + copa_start_y;
-                copa_america.alpha = Math.abs(tween.getValue());
-            }
-        });
 
         Funciones.initJugador(this);
-        this.physics.add.collider(jugador, copa_america, this.agarrarCopa, null, this);
+
+        if (!copas.copa_2) {
+            let copa_america = this.physics.add.sprite(400, 680, 'copa_america').setScale(10).setOrigin(0.5);
+            copa_america.setSize(10, 10);
+            this.tweens.add({
+                targets: copa_america,
+                rotation: Math.PI,
+                duration: 1000,
+                loop: -1,
+                ease: 'Linear'
+            });
+            let copa_start_y = copa_america.y;
+            this.tweens.addCounter({
+                from: -1,
+                to: 1,
+                ease: 'Linear',
+                duration: 1000,
+                repeat: -1,
+                yoyo: false,
+                onUpdate: function (tween) {
+                    copa_america.y = Math.abs(tween.getValue() * 30) + copa_start_y;
+                    copa_america.alpha = Math.abs(tween.getValue());
+                }
+            });
+
+            this.physics.add.collider(jugador, copa_america, this.agarrarCopa, null, this);
+        }
         Funciones.initPelota(this);
         
         Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397, y: 225});

@@ -1,5 +1,8 @@
 const EVENT_ABRIR_PUERTAS = new Event('abrir_puertas');
 
+let vida_jefe = 100;
+let jefe;
+
 let progreso_del_juego = {
     nivel_1: 0,
     nivel_2: 0,
@@ -33,6 +36,14 @@ let sceneGlobal;
 
 let enemigos_vivos = 0;
 
+let enemigos_duo = {x: null, o: null};
+let omuerto = false;
+let xmuerto = false;
+let contador_duo = 0;
+let duo_panico = false;
+let duo_panico_contador = 3000;
+let duo_speed = 1500;
+
 let obstaculos = [];
 let enemigos = [];
 let enemigos_grandes = [];
@@ -52,8 +63,8 @@ let keyRight = false;
 
 let velocidad = 200;
 
-let velocidad_caminando = 200;
-let velocidad_sprintando = 600;
+let velocidad_caminando = 500;
+let velocidad_sprintando = 900;
 
 let modoPelota = false;
 
@@ -62,6 +73,8 @@ let sprint = false;
 let stamina = 100;
 
 let tweenPelota;
+
+let ventaja = 0;
 
 window.onload = function () {
     config = {
@@ -81,14 +94,14 @@ window.onload = function () {
             default: 'arcade',
             arcade: {
                 gravity: { y: 0 },
-                debug: true
+                debug: false
             }
         },
         audio: {
             disableWebAudio: true
         },
         pixelArt: true,
-        scene: [Preloads, Tunel, Nivel_1, Nivel_2, Nivel_3, Nivel_4, Nivel_5, Nivel_6, Nivel_7, Nivel_8, Nivel_9, Nivel_10, Nivel_11, Nivel_12, Nivel_13, Nivel_14, Nivel_15, Interfaz]
+        scene: [Preloads, Tunel, Nivel_1, Nivel_2, Nivel_3, Nivel_4, Nivel_5, Nivel_6, Nivel_7, Nivel_8, Nivel_9, Nivel_10, Nivel_11, Nivel_12, Nivel_13, Nivel_14, Nivel_15, Interfaz, Final]
     };
 
     game = new Phaser.Game(config);

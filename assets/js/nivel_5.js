@@ -8,34 +8,36 @@ class Nivel_5 extends Phaser.Scene {
         enemigos = [];
 
         sceneGlobal = this;
-
+        
         this.add.image(config.width / 2, config.height / 2, this.sys.config);
-        let copa_libertadores = this.physics.add.sprite(1500, 400, 'copa_libertadores').setScale(10).setOrigin(0.5);
-        copa_libertadores.setSize(10, 10);
-        this.tweens.add({
-            targets: copa_libertadores,
-            rotation: Math.PI,
-            duration: 1000,
-            loop: -1,
-            ease: 'Linear'
-        });
-        let copa_start_y = copa_libertadores.y;
-        this.tweens.addCounter({
-            from: -1,
-            to: 1,
-            ease: 'Linear',
-            duration: 1000,
-            repeat: -1,
-            yoyo: false,
-            onUpdate: function (tween) {
-                copa_libertadores.y = Math.abs(tween.getValue() * 30) + copa_start_y;
-                copa_libertadores.alpha = Math.abs(tween.getValue());
-            }
-        });
 
         Funciones.initJugador(this);
 
-        this.physics.add.collider(jugador, copa_libertadores, this.agarrarCopa, null, this);
+        if (!copas.copa_1) {
+            let copa_libertadores = this.physics.add.sprite(1500, 400, 'copa_libertadores').setScale(10).setOrigin(0.5);
+            copa_libertadores.setSize(10, 10);
+            this.tweens.add({
+                targets: copa_libertadores,
+                rotation: Math.PI,
+                duration: 1000,
+                loop: -1,
+                ease: 'Linear'
+            });
+            let copa_start_y = copa_libertadores.y;
+            this.tweens.addCounter({
+                from: -1,
+                to: 1,
+                ease: 'Linear',
+                duration: 1000,
+                repeat: -1,
+                yoyo: false,
+                onUpdate: function (tween) {
+                    copa_libertadores.y = Math.abs(tween.getValue() * 30) + copa_start_y;
+                    copa_libertadores.alpha = Math.abs(tween.getValue());
+                }
+            });
+            this.physics.add.collider(jugador, copa_libertadores, this.agarrarCopa, null, this);
+        }
 
         Funciones.initPelota(this);
         

@@ -13,12 +13,23 @@ class Preloads extends Phaser.Scene {
         this.load.image('copa_libertadores', 'assets/images/copa_libertadores.png');
         this.load.image('copa_mundo', 'assets/images/copa_mundo.png');
 
+        this.load.image('req_america', 'assets/images/req_america.png');
+        this.load.image('req_libertadores', 'assets/images/req_libertadores.png');
+        this.load.image('req_mundo', 'assets/images/req_mundo.png');
+
+        this.load.image('ui_vida_arquero', 'assets/images/ui_vida_arquero.png');
+        this.load.image('ui_soporte_trofeos', 'assets/images/soporte_trofeos.png');
+
         this.load.spritesheet('copa_america_spritesheet', 'assets/images/copa_america_spritesheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('copa_libertadores_spritesheet', 'assets/images/copa_libertadores_spritesheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('copa_mundo_spritesheet', 'assets/images/copa_mundo_spritesheet.png', { frameWidth: 32, frameHeight: 32 });
 
+        this.load.spritesheet('jefe', 'assets/images/jefe.png', { frameHeight: 816, frameWidth: 1920 });
+
         this.load.spritesheet('personaje', 'assets/images/personaje.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('enemigo_1', 'assets/images/enemigo_1.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('enemigo_2_1', 'assets/images/enemigo_2_1.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('enemigo_2_2', 'assets/images/enemigo_2_2.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('pelota', 'assets/images/pelota.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('personaje_fuera', 'assets/images/fuera_pj.png', { frameWidth: 32, frameHeight: 32 });
 
@@ -68,6 +79,62 @@ class Preloads extends Phaser.Scene {
         this.anims.create({
             key: 'no_puerta',
             frames: this.anims.generateFrameNumbers('no_puerta', { start: 0, end: 3 }),
+            frameRate: 5,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'copa_libertadores_spritesheet',
+            frames: this.anims.generateFrameNumbers('copa_libertadores_spritesheet', { start: 0, end: 11 }),
+            frameRate: 5,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'copa_america_spritesheet',
+            frames: this.anims.generateFrameNumbers('copa_america_spritesheet', { start: 0, end: 11 }),
+            frameRate: 5,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'copa_mundo_spritesheet',
+            frames: this.anims.generateFrameNumbers('copa_mundo_spritesheet', { start: 0, end: 12 }),
+            frameRate: 5,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'jefe_move',
+            frames: this.anims.generateFrameNumbers('jefe', { start: 2, end: 3 }),
+            frameRate: 5,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'jefe_ataja',
+            frames: this.anims.generateFrameNumbers('jefe', { start: 0, end: 0 }),
+            frameRate: 5,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'jefe_quieto',
+            frames: this.anims.generateFrameNumbers('jefe', { start: 1, end: 1 }),
+            frameRate: 5,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'enemigo_2_1',
+            frames: this.anims.generateFrameNumbers('enemigo_2_1', { start: 0, end: 3 }),
+            frameRate: 5,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'enemigo_2_2',
+            frames: this.anims.generateFrameNumbers('enemigo_2_2', { start: 0, end: 3 }),
             frameRate: 5,
             repeat: 0
         });
