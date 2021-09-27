@@ -12,9 +12,10 @@ class Nivel_6 extends Phaser.Scene {
         this.add.image(config.width / 2, config.height / 2, this.sys.config);
 
         Funciones.initJugador(this);
-        Funciones.initPelota(this);
+        Funciones.initPelota(this, {x: config.width / 2, y: 302});
         
-        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397, y: 225});
+        //Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397, y: 225});
+        Funciones.initEnemigosDuo(this);
 
         Funciones.initInputs(this);
         Funciones.initBordes(this);
@@ -31,6 +32,8 @@ class Nivel_6 extends Phaser.Scene {
         Funciones.updatePelota(this, pelota);
 
         Funciones.updateEnemigo(this, enemigo);
+
+        Funciones.updateEnemigosDuo(this, delta);
     }
 
     initColliders() {
