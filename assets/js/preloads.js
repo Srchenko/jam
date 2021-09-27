@@ -20,6 +20,12 @@ class Preloads extends Phaser.Scene {
         this.load.image('ui_vida_arquero', 'assets/images/ui_vida_arquero.png');
         this.load.image('ui_soporte_trofeos', 'assets/images/soporte_trofeos.png');
 
+        //this.load.spritesheet('ui_menu_inicio', 'assets/images/menu_inicio.png', { frameWidth: 256, frameHeight: 144 });
+
+        //this.load.spritesheet('ui_menu_inicio', 'assets/images/menu_inicio.png', { frameWidth: 128, frameHeight: 72 });
+        this.load.spritesheet('ui_menu_jugar', 'assets/images/jugar_menu.png', { frameWidth: 160, frameHeight: 160 });
+        this.load.spritesheet('ui_menu_creditos', 'assets/images/creditos_menu.png', { frameWidth: 160, frameHeight: 160 });
+
         this.load.spritesheet('copa_america_spritesheet', 'assets/images/copa_america_spritesheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('copa_libertadores_spritesheet', 'assets/images/copa_libertadores_spritesheet.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('copa_mundo_spritesheet', 'assets/images/copa_mundo_spritesheet.png', { frameWidth: 32, frameHeight: 32 });
@@ -47,6 +53,19 @@ class Preloads extends Phaser.Scene {
  
     create() {
         // this.sound.play("multitud", {loop: true, volume: .7});
+        this.anims.create({
+            key: 'ui_menu_jugar',
+            frames: this.anims.generateFrameNumbers('ui_menu_jugar', { start: 0, end: 9 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'ui_menu_creditos',
+            frames: this.anims.generateFrameNumbers('ui_menu_creditos', { start: 0, end: 12 }),
+            frameRate: 10,
+            repeat: -1
+        });
 
         this.anims.create({
             key: 'caminar',

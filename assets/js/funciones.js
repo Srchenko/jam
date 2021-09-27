@@ -363,30 +363,26 @@ class Funciones {
     }
 
     static initEnemigosDuo(scene) {
-        obstaculos.forEach(obstaculo => {
-            scene.physics.add.collider(enemigos_duo.x, obstaculo, this.rotarEnemigo, null, scene);
-            scene.physics.add.collider(enemigos_duo.o, obstaculo, this.rotarEnemigo, null, scene);
-        });
-        scene.physics.add.collider(pelota, enemigos_duo.x, this.patearEnemigoX, null, scene);
-        scene.physics.add.collider(pelota, enemigos_duo.o, this.patearEnemigoO, null, scene);
+        if (progreso_del_juego[scene.sys.config] == 0) {
+        
+            duo_panico = false;
 
-        duo_panico = false;
+            enemigos_duo.o = scene.physics.add.sprite((pelota.x) - 400, pelota.y, "enemigo_2_1").setScale(4);
+            enemigos_duo.x = scene.physics.add.sprite((pelota.x) + 400, pelota.y, "enemigo_2_2").setScale(4);
 
-        enemigos_duo.o = scene.physics.add.sprite((pelota.x) - 400, pelota.y, "enemigo_2_1").setScale(4);
-        enemigos_duo.x = scene.physics.add.sprite((pelota.x) + 400, pelota.y, "enemigo_2_2").setScale(4);
+            enemigos_duo.o.rotation = Phaser.Math.Angle.Between(enemigos_duo.o.x, enemigos_duo.o.y, enemigos_duo.x.x, enemigos_duo.x.y) + Math.PI/2;
+            enemigos_duo.x.rotation = Phaser.Math.Angle.Between(enemigos_duo.x.x, enemigos_duo.x.y, enemigos_duo.o.x, enemigos_duo.o.y) + Math.PI/2;
 
-        enemigos_duo.o.rotation = Phaser.Math.Angle.Between(enemigos_duo.o.x, enemigos_duo.o.y, enemigos_duo.x.x, enemigos_duo.x.y) + Math.PI/2;
-        enemigos_duo.x.rotation = Phaser.Math.Angle.Between(enemigos_duo.x.x, enemigos_duo.x.y, enemigos_duo.o.x, enemigos_duo.o.y) + Math.PI/2;
+            scene.tweens.add({
+                targets: enemigos_duo.o,
+                x: pelota.x,
+                y: pelota.y,
+                duration: 200,
+                ease: 'Linear',
+            });
 
-        scene.tweens.add({
-            targets: enemigos_duo.o,
-            x: pelota.x,
-            y: pelota.y,
-            duration: 200,
-            ease: 'Linear',
-        });
-
-        enemigos_vivos += 2;
+            enemigos_vivos += 2;
+        }
     }
 
     static updateEnemigosDuo(scene, delta) {

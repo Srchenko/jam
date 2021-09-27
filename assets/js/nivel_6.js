@@ -60,5 +60,14 @@ class Nivel_6 extends Phaser.Scene {
         enemigos_grandes.forEach(enemigo => {
             this.physics.add.collider(pelota, enemigo, Funciones.patearEnemigoGrande, null, this);
         });
+
+        if (progreso_del_juego[this.sys.config] == 0) {
+            obstaculos.forEach(obstaculo => {
+                this.physics.add.collider(enemigos_duo.x, obstaculo, Funciones.rotarEnemigo, null, this);
+                this.physics.add.collider(enemigos_duo.o, obstaculo, Funciones.rotarEnemigo, null, this);
+            });
+            this.physics.add.collider(pelota, enemigos_duo.x, Funciones.patearEnemigoX, null, this);
+            this.physics.add.collider(pelota, enemigos_duo.o, Funciones.patearEnemigoO, null, this);
+        }
     }
 }
