@@ -4,7 +4,7 @@ let pelotaPromise;
 class Funciones {
     static patearJefe(pelota, jefe) {
         if (dominio_de_la_pelota != "enemigo") {
-            
+            Interfaz.play_sonido("grunido");
             jefe.anims.play("jefe_ataja", true);
             if (dominio_de_la_pelota == "player" && vida_jefe > 0) {vida_jefe -= 10;}
             if (vida_jefe > 0) dominio_de_la_pelota = "enemigo";
@@ -16,8 +16,8 @@ class Funciones {
 
             angulo = Phaser.Math.Angle.Between(jugador.x, jugador.y, pelota.x, pelota.y);
 
-            let x = pelota.x + Math.cos(angulo) * -700; 
-            let y = pelota.y + Math.sin(angulo) * -700;
+            let x = pelota.x + Math.cos(angulo) * -1000; 
+            let y = pelota.y + Math.sin(angulo) * -1000;
 
             pelota.rotation = angulo - (Math.PI/2);
 
@@ -184,17 +184,12 @@ class Funciones {
                 pelota.anims.pause();
             }
         }));
-
-        //tweenTemp.stop();
-
-        //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
-        //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
     }
 
     static patear(pelota, jugador) {
         if (dominio_de_la_pelota != "enemigo") {
             dominio_de_la_pelota = "player";
-            duo_panico = true;
+            if (progreso_del_juego[sceneGlobal.sys.config] == 0) duo_panico = true;
             contador_dominio_pelota = ventaja;
             //sceneGlobal.sound.play("patada");
             //sceneGlobal.sound.play("emocion");
@@ -214,6 +209,9 @@ class Funciones {
                 y: y,
                 duration: 1500,
                 ease: 'Power1',
+                onUpdate: () => {
+                    
+                },
                 onStart: () => {
                     pelota.anims.resume();
                     pelota.anims.play("pelota_gira", true);
@@ -222,14 +220,14 @@ class Funciones {
                     pelota.anims.pause();
                 }
             }));
-
-            //tweenTemp.stop();
-
-            //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
-            //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
+            
         }else {
             if (copas.copa_3) {
-                sceneGlobal.scene.start("nivel_12");
+                if(jefe){
+                    sceneGlobal.scene.start("nivel_14");
+                }else{
+                    sceneGlobal.scene.start("nivel_12");
+                }
             }else if (copas.copa_2) {
                 sceneGlobal.scene.start("nivel_8");
             }else if (copas.copa_1) {
@@ -277,11 +275,7 @@ class Funciones {
                     pelota.anims.pause();
                 }
             }));
-
-            //tweenTemp.stop();
-
-            //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
-            //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
+            
         }else if (dominio_de_la_pelota == "player") {
             enemies.setVelocity(0,0);
             enemies.destroy();
@@ -296,16 +290,14 @@ class Funciones {
             contador_dominio_pelota = 0;
             //sceneGlobal.sound.play("patada");
             //sceneGlobal.sound.play("emocion");
+            Interfaz.play_sonido("grunido");
             let angulo;
 
             angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, enemies.x, enemies.y);
 
             let x = pelota.x + Math.cos(angulo) * -1000; 
-            let y = pelota.y + Math.sin(angulo) * -1000;   
+            let y = pelota.y + Math.sin(angulo) * -1000;
 
-            //enemies.setVelocity(Math.cos(ang_empuje) * -400, Math.sin(ang_empuje) * -400);
-
-            let ang_rebote = Math.atan2(enemies.body.velocity.x/300, enemies.body.velocity.y/(-300));
             enemies.rotation = angulo - (Math.PI/2);
             pelota.rotation = angulo - (Math.PI/2);
 
@@ -337,11 +329,6 @@ class Funciones {
                     }, 4000)
                 )
             });
-
-            //tweenTemp.stop();
-
-            //pelota.body.velocity.y = Math.sin(angulo) * -velocidad * 2; 
-            //pelota.body.velocity.x = Math.cos(angulo) * -velocidad * 2;
         }else if (dominio_de_la_pelota == "player") {
             enemies.setVelocity(0,0);
             enemies.destroy();
@@ -364,8 +351,13 @@ class Funciones {
 
     static initEnemigosDuo(scene) {
         if (progreso_del_juego[scene.sys.config] == 0) {
-        
+            enemigos_duo = {x: null, o: null};
+            omuerto = false;
+            xmuerto = false;
+            contador_duo = 0;
             duo_panico = false;
+            duo_panico_contador = 3000;
+            duo_speed = 1500;
 
             enemigos_duo.o = scene.physics.add.sprite((pelota.x) - 400, pelota.y, "enemigo_2_1").setScale(4);
             enemigos_duo.x = scene.physics.add.sprite((pelota.x) + 400, pelota.y, "enemigo_2_2").setScale(4);
@@ -382,11 +374,21 @@ class Funciones {
             });
 
             enemigos_vivos += 2;
+        }else {
+            enemigos_duo = {x: null, o: null};
+            omuerto = false;
+            xmuerto = false;
+            contador_duo = 0;
+            duo_panico = false;
+            duo_panico_contador = 3000;
+            duo_speed = 1500;
         }
     }
 
     static updateEnemigosDuo(scene, delta) {
         //timer
+        if (menu_pausa_bool) return;
+
         if (duo_panico) {
             contador_duo += delta;
             if (contador_duo > duo_panico_contador) {
@@ -434,7 +436,6 @@ class Funciones {
                     });
                 }else {
                     if(!omuerto) {
-                        console.log("xvivo. omuerto")
                         duo_panico_contador = 200;
                         contador_duo = 0;
                         duo_speed = 400;
@@ -489,14 +490,14 @@ class Funciones {
         }
     }
 
-    static initEnemigo(scene, rotacion, posicion) {
+    static initEnemigo(scene, rotacion, posicion, velocidad = {x:300, y:-300}) {
         if (progreso_del_juego[scene.sys.config] == 0) {
             enemigo = scene.physics.add
                 .sprite(posicion.x, posicion.y, "enemigo_1")
                 .setCollideWorldBounds(true)
                 .setScale(3);
             enemigo.rotation = rotacion;
-            enemigo.setVelocity(300,-300);
+            enemigo.setVelocity(velocidad.x, velocidad.y);
             enemigo.setBounce(1);
             enemigo.anims.play("enemigo_moverse");
             enemigos.push(enemigo);
@@ -507,13 +508,13 @@ class Funciones {
     static initEnemigoGrandote(scene, rotacion, posicion) {
         if (progreso_del_juego[scene.sys.config] == 0) {
             let enemigo = scene.physics.add
-                .sprite(posicion.x, posicion.y, "enemigo_1")
+                .sprite(posicion.x, posicion.y, "enemigo_3")
                 .setCollideWorldBounds(true)
                 .setScale(5);
             let angle = Phaser.Math.Angle.Between(enemigo.x, enemigo.y, pelota.x, pelota.y);
             enemigo.rotation = angle + (Math.PI/2);
             enemigo.setBounce(1);
-            enemigo.anims.play("enemigo_moverse");
+            enemigo.anims.play("enemigo_3_moverse");
             enemigo.anims.pause();
             new Promise(function(resolve, reject) {
                 resolve(
@@ -522,7 +523,7 @@ class Funciones {
                         enemigo.rotation = angle + (Math.PI/2);
                         enemigo.anims.resume();
                         enemigo.setVelocity(Math.cos(angle) * 800, Math.sin(angle) * 800);
-                    }, 4000)
+                    }, Phaser.Math.Between(1000, 3000))
                 )
             });
             enemigos_grandes.push(enemigo);
@@ -565,93 +566,98 @@ class Funciones {
     }
 
     static updateJugador(scene, jugador, delta) {
-        if (enemigos_vivos <= 0) {
-            this.emitter=EventDispatcher.getInstance();
-            this.emitter.emit("abrir_puertas")
-        }
+        if (!menu_pausa_bool) {
+            if (enemigos_vivos <= 0) {
+                this.emitter=EventDispatcher.getInstance();
+                this.emitter.emit("abrir_puertas")
+            }
 
-        if (contador_dominio_pelota >= 4) {
-            dominio_de_la_pelota = "nadie";
+            if (contador_dominio_pelota >= 4) {
+                dominio_de_la_pelota = "nadie";
+            }else {
+                contador_dominio_pelota += delta*.005;
+            }
+
+            sprintBar.progress = Phaser.Math.Clamp(Math.round(stamina/11.11), 0, 9);
+
+            if(sprint && stamina > 5){
+                velocidad = velocidad_sprintando;
+            }else{
+                velocidad = velocidad_caminando;
+            }
+
+            if (keyUp || keyDown || keyLeft || keyRight) { 
+                jugador.anims.play("caminar", true);
+                if (keyUp) {
+                    if (keyLeft) {
+                        jugador.setVelocityY(-velocidad/1.5);
+                        jugador.setVelocityX(-velocidad/1.5);
+                    } else if (keyRight) {
+                        jugador.setVelocityY(-velocidad/1.5);
+                        jugador.setVelocityX(velocidad/1.5);
+                    } else {
+                        jugador.setVelocity(0, -velocidad);
+                    }
+                }
+                else if (keyDown) {
+                    if (keyLeft) {
+                        jugador.setVelocityY(velocidad/1.5);
+                        jugador.setVelocityX(-velocidad/1.5);
+                    } else if (keyRight) {
+                        jugador.setVelocityY(velocidad/1.5);
+                        jugador.setVelocityX(velocidad/1.5);
+                    } else {
+                        jugador.setVelocity(0, velocidad);
+                    }
+                }
+                else if (keyLeft) {
+                    jugador.setVelocity(-velocidad, 0);
+                }
+                else if (keyRight) {
+                    jugador.setVelocity(velocidad, 0);
+                }
+            }else{
+                jugador.setVelocity(0, 0);
+                jugador.anims.stop();
+            }
+
+            // derecha
+            if (jugador.body.velocity.x > 0) {
+                if (jugador.body.velocity.y > 0) {
+                    jugador.rotation = Math.PI / 2 + (Math.PI / 4);
+                }else if (jugador.body.velocity.y < 0) {
+                    jugador.rotation = Math.PI / 4;
+                }else {
+                    jugador.rotation = Math.PI / 2;
+                }
+            }else if (jugador.body.velocity.x < 0) {
+                if (jugador.body.velocity.y > 0) {
+                    jugador.rotation = -Math.PI / 2 - (Math.PI / 4);
+                }else if (jugador.body.velocity.y < 0) {
+                    jugador.rotation = -Math.PI / 4;
+                }else {
+                    jugador.rotation = -Math.PI / 2;
+                }
+            }else if (jugador.body.velocity.y > 0) {
+                jugador.rotation = Math.PI;
+            }else if (jugador.body.velocity.y < 0) {
+                jugador.rotation = 0;
+            }
+
+            //console.log(stamina);
+
+            if (sprint) {
+                if (stamina > 0) {
+                    stamina -= delta * .05;
+                }
+            }else {
+                if (stamina < 100) {
+                    stamina += delta * .03;
+                }
+            }
         }else {
-            contador_dominio_pelota += delta*.005;
-        }
-
-        sprintBar.progress = Phaser.Math.Clamp(Math.round(stamina/11.11), 0, 9);
-
-        if(sprint && stamina > 5){
-            velocidad = velocidad_sprintando;
-        }else{
-            velocidad = velocidad_caminando;
-        }
-
-        if (keyUp || keyDown || keyLeft || keyRight) { 
-            jugador.anims.play("caminar", true);
-            if (keyUp) {
-                if (keyLeft) {
-                    jugador.setVelocityY(-velocidad/1.5);
-                    jugador.setVelocityX(-velocidad/1.5);
-                } else if (keyRight) {
-                    jugador.setVelocityY(-velocidad/1.5);
-                    jugador.setVelocityX(velocidad/1.5);
-                } else {
-                    jugador.setVelocity(0, -velocidad);
-                }
-            }
-            else if (keyDown) {
-                if (keyLeft) {
-                    jugador.setVelocityY(velocidad/1.5);
-                    jugador.setVelocityX(-velocidad/1.5);
-                } else if (keyRight) {
-                    jugador.setVelocityY(velocidad/1.5);
-                    jugador.setVelocityX(velocidad/1.5);
-                } else {
-                    jugador.setVelocity(0, velocidad);
-                }
-            }
-            else if (keyLeft) {
-                jugador.setVelocity(-velocidad, 0);
-            }
-            else if (keyRight) {
-                jugador.setVelocity(velocidad, 0);
-            }
-        }else{
-            jugador.setVelocity(0, 0);
+            jugador.body.setVelocity(0,0);
             jugador.anims.stop();
-        }
-
-        // derecha
-        if (jugador.body.velocity.x > 0) {
-            if (jugador.body.velocity.y > 0) {
-                jugador.rotation = Math.PI / 2 + (Math.PI / 4);
-            }else if (jugador.body.velocity.y < 0) {
-                jugador.rotation = Math.PI / 4;
-            }else {
-                jugador.rotation = Math.PI / 2;
-            }
-        }else if (jugador.body.velocity.x < 0) {
-            if (jugador.body.velocity.y > 0) {
-                jugador.rotation = -Math.PI / 2 - (Math.PI / 4);
-            }else if (jugador.body.velocity.y < 0) {
-                jugador.rotation = -Math.PI / 4;
-            }else {
-                jugador.rotation = -Math.PI / 2;
-            }
-        }else if (jugador.body.velocity.y > 0) {
-            jugador.rotation = Math.PI;
-        }else if (jugador.body.velocity.y < 0) {
-            jugador.rotation = 0;
-        }
-
-        //console.log(stamina);
-
-        if (sprint) {
-            if (stamina > 0) {
-                stamina -= delta * .05;
-            }
-        }else {
-            if (stamina < 100) {
-                stamina += delta * .03;
-            }
         }
     }
 
@@ -676,19 +682,17 @@ class Funciones {
     }
 
     static updatePelota(scene, pelota) {
-        // if (pelota.body.velocity.x != 0 || pelota.body.velocity.y != 0) {
-        //     pelota.anims.play("pelota_gira", true);
-        //     pelota.anims.frame = pelota.body.velocity.x;
-        //     //pelota.rotation = Math.atan2(pelota.body.velocity.y, pelota.body.velocity.x) - Math.PI / 2;
-        // }else {
-        //     pelota.anims.pause();
-        // }
         if (dominio_de_la_pelota == "player") {
             pelota.setTint(0x00ff00);
         }else if (dominio_de_la_pelota == "enemigo") {
             pelota.setTint(0xff0000);
         }else if (dominio_de_la_pelota == "nadie") {
             pelota.setTint(0x0000ff);
+        }
+        
+        if (pelota.x > config.width || pelota.x < 0 || pelota.y > config.height || pelota.y < 0) {
+            pelota.x = config.width/2;
+            pelota.y = config.height/2;
         }
     }
 
@@ -808,6 +812,7 @@ class Funciones {
             lvl_nuevo.copa_requerida = copa_requerida.copa;
             puerta.setTint(0xff0000);
             if (copas[copa_requerida.copa] == true) {
+                puerta.setTint(0xffffff);
                 scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
             }
         }else {
@@ -837,6 +842,7 @@ class Funciones {
             lvl_nuevo.copa_requerida = copa_requerida.copa;
             puerta.setTint(0xff0000);
             if (copas[copa_requerida.copa] == true) {
+                puerta.setTint(0xffffff);
                 scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
             }
         }else {
@@ -866,6 +872,7 @@ class Funciones {
             lvl_nuevo.copa_requerida = copa_requerida.copa;
             puerta.setTint(0xff0000);
             if (copas[copa_requerida.copa] == true) {
+                puerta.setTint(0xffffff);
                 scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
             }
         }else {
@@ -895,6 +902,7 @@ class Funciones {
             lvl_nuevo.copa_requerida = copa_requerida.copa;
             puerta.setTint(0xff0000);
             if (copas[copa_requerida.copa] == true) {
+                puerta.setTint(0xffffff);
                 scene.physics.add.collider(jugador, lvl_obj, this.cambiarNivel, null, scene);
             }
         }else {

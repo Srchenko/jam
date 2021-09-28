@@ -14,7 +14,10 @@ class Nivel_13 extends Phaser.Scene {
         Funciones.initJugador(this);
         Funciones.initPelota(this);
         
-        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397, y: 225});
+        Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 1400, y: 800}, {x: 300, y: 300});
+        Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 400, y: 800}, {x: -300, y: -300});
+        Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 400, y: 200});
+        Funciones.initEnemigosDuo(this);
 
         Funciones.initInputs(this);
         Funciones.initBordes(this);
@@ -28,9 +31,13 @@ class Nivel_13 extends Phaser.Scene {
     update(time, delta){
         Funciones.updateJugador(this, jugador, delta);
 
-        Funciones.updatePelota(this, pelota);
+        if (!menu_pausa_bool) {
+            Funciones.updatePelota(this, pelota);
 
-        Funciones.updateEnemigo(this, enemigo);
+            Funciones.updateEnemigo(this, enemigo);
+
+            Funciones.updateEnemigosDuo(this, delta);
+        }
     }
 
     initColliders() {
@@ -52,10 +59,19 @@ class Nivel_13 extends Phaser.Scene {
         });
 
         enemigos.forEach(enemigo => {
-            this.physics.add.collider(pelota, enemigo, Funciones.patearEnemigo, null, this);
+            this.physics.add.overlap(pelota, enemigo, Funciones.patearEnemigo, null, this);
         });
         enemigos_grandes.forEach(enemigo => {
-            this.physics.add.collider(pelota, enemigo, Funciones.patearEnemigoGrande, null, this);
+            this.physics.add.overlap(pelota, enemigo, Funciones.patearEnemigoGrande, null, this);
         });
+
+        if (progreso_del_juego[this.sys.config] == 0) {
+            obstaculos.forEach(obstaculo => {
+                this.physics.add.collider(enemigos_duo.x, obstaculo, Funciones.rotarEnemigo, null, this);
+                this.physics.add.collider(enemigos_duo.o, obstaculo, Funciones.rotarEnemigo, null, this);
+            });
+            this.physics.add.overlap(pelota, enemigos_duo.x, Funciones.patearEnemigoX, null, this);
+            this.physics.add.overlap(pelota, enemigos_duo.o, Funciones.patearEnemigoO, null, this);
+        }
     }
 }

@@ -6,6 +6,10 @@ class Tunel extends Phaser.Scene {
     create() {
         sceneGlobal = this;
 
+        if (primeraVez) {
+            Interfaz.mostrar_menu_inicio();
+        }
+
         this.add.image(config.width / 2, config.height / 2, "primera_etapa");
 
         let lvl_nuevo = this.add.rectangle(960, 0, 250, 60, 0xffffff);

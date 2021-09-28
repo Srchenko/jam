@@ -36,6 +36,7 @@ class Preloads extends Phaser.Scene {
         this.load.spritesheet('enemigo_1', 'assets/images/enemigo_1.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('enemigo_2_1', 'assets/images/enemigo_2_1.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('enemigo_2_2', 'assets/images/enemigo_2_2.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('enemigo_3', 'assets/images/enemigo_3.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('pelota', 'assets/images/pelota.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('personaje_fuera', 'assets/images/fuera_pj.png', { frameWidth: 32, frameHeight: 32 });
 
@@ -45,10 +46,13 @@ class Preloads extends Phaser.Scene {
             this.load.image(`nivel_${i+1}`, `assets/images/Fondo ${i+1}.png`);
         }
 
-        // this.load.audio('multitud', 'assets/sounds/multitud.ogg');
-        // this.load.audio('emocion', 'assets/sounds/emocion.ogg');
-        // this.load.audio('patada', 'assets/sounds/patada.ogg');
-        // this.load.audio('silbato', 'assets/sounds/silbato.ogg');
+        this.load.audio('grunido', 'assets/sounds/grunido.ogg');
+
+        this.load.audio('musica_1', 'assets/sounds/musica_1.mp3');
+        this.load.audio('musica_2', 'assets/sounds/musica_2.mp3');
+        this.load.audio('musica_3', 'assets/sounds/musica_3.mp3');
+        this.load.audio('musica_4', 'assets/sounds/musica_4.mp3');
+        this.load.audio('musica_5', 'assets/sounds/musica_5.mp3');
     }
  
     create() {
@@ -77,6 +81,13 @@ class Preloads extends Phaser.Scene {
         this.anims.create({
             key: 'enemigo_moverse',
             frames: this.anims.generateFrameNumbers('enemigo_1', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'enemigo_3_moverse',
+            frames: this.anims.generateFrameNumbers('enemigo_3', { start: 0, end: 3 }),
             frameRate: 10,
             repeat: -1
         });

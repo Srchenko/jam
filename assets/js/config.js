@@ -1,7 +1,12 @@
 const EVENT_ABRIR_PUERTAS = new Event('abrir_puertas');
 
+let primeraVez = true;
+let final = true;
+
 let vida_jefe = 100;
-let jefe;
+let jefe = null;
+
+let musica = null;
 
 let progreso_del_juego = {
     nivel_1: 0,

@@ -15,6 +15,11 @@ class Nivel_14 extends Phaser.Scene {
         Funciones.initPelota(this);
         
         Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 397, y: 225});
+        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 1400, y: 225});
+        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 960, y: 880});
+        Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 1400, y: 800}, {x: 300, y: 300});
+        Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 400, y: 880}, {x: -300, y: -300});
+        Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 960, y: 200});
 
         Funciones.initInputs(this);
         Funciones.initBordes(this);
@@ -30,9 +35,11 @@ class Nivel_14 extends Phaser.Scene {
     update(time, delta){
         Funciones.updateJugador(this, jugador, delta);
 
-        Funciones.updatePelota(this, pelota);
+        if (!menu_pausa_bool) {
+            Funciones.updatePelota(this, pelota);
 
-        Funciones.updateEnemigo(this, enemigo);
+            Funciones.updateEnemigo(this, enemigo);
+        }
     }
 
     initColliders() {
@@ -54,10 +61,10 @@ class Nivel_14 extends Phaser.Scene {
         });
 
         enemigos.forEach(enemigo => {
-            this.physics.add.collider(pelota, enemigo, Funciones.patearEnemigo, null, this);
+            this.physics.add.overlap(pelota, enemigo, Funciones.patearEnemigo, null, this);
         });
         enemigos_grandes.forEach(enemigo => {
-            this.physics.add.collider(pelota, enemigo, Funciones.patearEnemigoGrande, null, this);
+            this.physics.add.overlap(pelota, enemigo, Funciones.patearEnemigoGrande, null, this);
         });
     }
 }
