@@ -5,10 +5,21 @@ class Final extends Phaser.Scene {
 
     create(){
         // texto que dice que ganaste centrado
-        this.add.text(config.width/2, config.height/2, "Ganaste", {
-            fontSize: '50px',
-            fill: '#fff'
-        }).setOrigin(0.5);
+        Interfaz.mostrar_menu_ganaste();
+
+        menu_victoria.fondo.anims.play("ui_menu_victoria");
+
+        this.tweens.add({
+            targets: menu_victoria.fondo,
+            x: config.width / 2,
+            duration: 1000,
+            ease: 'Bounce',
+            repeat: 0,
+            completeDelay: 10000,
+            onComplete: () => {
+                location.reload();
+            }
+        });
     }
 
     update(time, delta){

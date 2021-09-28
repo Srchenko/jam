@@ -49,6 +49,7 @@ class Funciones {
         if (dominio_de_la_pelota != "player") {
             duo_panico = false;
             dominio_de_la_pelota = "enemigo"
+            Interfaz.play_sonido("ping", -200, 0.4);
             contador_dominio_pelota = 0;
             let angulo;
             if (!omuerto) {
@@ -105,6 +106,7 @@ class Funciones {
         if (dominio_de_la_pelota != "player") {
             duo_panico = false;
             dominio_de_la_pelota = "nadie"
+            Interfaz.play_sonido("pong", -200, 0.4);
             let angulo;
             if (!xmuerto) {
                 angulo = Phaser.Math.Angle.Between(enemigos_duo.x.x, enemigos_duo.x.y, enemigo.x, enemigo.y);
@@ -189,6 +191,7 @@ class Funciones {
     static patear(pelota, jugador) {
         if (dominio_de_la_pelota != "enemigo") {
             dominio_de_la_pelota = "player";
+            Interfaz.play_sonido("kick", -600, 0.4);
             if (progreso_del_juego[sceneGlobal.sys.config] == 0) duo_panico = true;
             contador_dominio_pelota = ventaja;
             //sceneGlobal.sound.play("patada");
@@ -222,6 +225,7 @@ class Funciones {
             }));
             
         }else {
+            perdio = true;
             if (copas.copa_3) {
                 if(jefe){
                     sceneGlobal.scene.start("nivel_14");
@@ -242,6 +246,7 @@ class Funciones {
         if (dominio_de_la_pelota != "player") {
             dominio_de_la_pelota = "enemigo";
             contador_dominio_pelota = 0;
+            Interfaz.play_sonido("kick", -600, 0.4);
             //sceneGlobal.sound.play("patada");
             //sceneGlobal.sound.play("emocion");
             let angulo;
@@ -277,6 +282,7 @@ class Funciones {
             }));
             
         }else if (dominio_de_la_pelota == "player") {
+            Interfaz.play_sonido("cancha_bobo", 1200, 0.4);
             enemies.setVelocity(0,0);
             enemies.destroy();
             enemigos_vivos--;
@@ -330,6 +336,7 @@ class Funciones {
                 )
             });
         }else if (dominio_de_la_pelota == "player") {
+            Interfaz.play_sonido("cancha_bobo", -200, 0.4);
             enemies.setVelocity(0,0);
             enemies.destroy();
             enemigos_vivos--;
@@ -447,6 +454,11 @@ class Funciones {
     }
 
     static initJugador(scene) {
+        if (perdio) {
+            Interfaz.mostrar_pantalla_derrota();
+            perdio = false;
+        }
+
         ventaja = 0;
         sceneGlobal.emitter=EventDispatcher.getInstance();
         sceneGlobal.emitter.off("abrir_puertas");
@@ -487,6 +499,8 @@ class Funciones {
             }
         }else {
             jefe.anims.play("jefe_quieto", true);
+            jefe.setSize(jefe.height, jefe.width / 2);
+            jefe.refreshBody();
         }
     }
 
@@ -724,6 +738,7 @@ class Funciones {
     }
 
     static fueraLinea(pelotis, bordis){
+        Interfaz.play_sonido("fuera", 0, .4);
         dominio_de_la_pelota = "nadie";
         //sceneGlobal.sound.play("silbato");
         //sceneGlobal.sound.play("patada");

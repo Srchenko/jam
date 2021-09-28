@@ -81,6 +81,8 @@ let tweenPelota;
 
 let ventaja = 0;
 
+let perdio = false;
+
 window.onload = function () {
     config = {
         type: Phaser.AUTO,

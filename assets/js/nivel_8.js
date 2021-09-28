@@ -93,6 +93,7 @@ class Nivel_8 extends Phaser.Scene {
     }
 
     agarrarCopa(jugador, copa) {
+        Interfaz.play_sonido("checkpoint");
         copa.destroy();
         copas.copa_2 = true;
         Interfaz.cambiarMusica("musica_3");

@@ -36,6 +36,19 @@ let menu_pausa = {
     ventana: null,
 };
 
+let menu_derrota = {
+    fondo: null
+}
+
+let menu_victoria = {
+    fondo: null
+}
+
+let menu_controles = {
+    fondo: null,
+    pelota: null
+}
+
 let menu_pausa_tweens = false;
 let menu_pausa_bool = false;
 
@@ -56,6 +69,8 @@ class Interfaz extends Phaser.Scene {
 
         this.load.spritesheet('ui_menu_victoria', 'assets/images/menu_victoria.png', { frameWidth: 128, frameHeight: 72 });
         this.load.spritesheet('ui_menu_derrota', 'assets/images/menu_derrota.png', { frameWidth: 128, frameHeight: 72 });
+
+        this.load.image('ui_menu_controles', 'assets/images/menu_controles.png', { frameWidth: 128, frameHeight: 72 });
     }
 
     create() {
@@ -112,12 +127,19 @@ class Interfaz extends Phaser.Scene {
         barra_vida_jefe_progreso = this.add.rectangle(config.width / 2, 138, 756.2 / 2, 60, 0x526391).setOrigin(1, 1).setVisible(false);
         barra_vida_jefe = this.add.sprite(config.width / 2, 150, 'ui_vida_arquero').setOrigin(0.5, 1).setScale(2).setVisible(false);
 
+        menu_controles.fondo = this.add.sprite(config.width/2, config.height/2, 'ui_menu_controles').setOrigin(.5, .5).setScale(15).setVisible(false);
+        menu_controles.pelota = this.add.sprite(config.width/2, config.height/2, 'pelota').setOrigin(.5, .5).setScale(6).setVisible(false);
+
         menu_inicio.fondo_fondo = this.add.rectangle(0, 0, 1920, 1080, 0x000000).setOrigin(0, 0).setVisible(false).setAlpha(0);
         menu_inicio.fondo = this.add.sprite(config.width/2 - 1920, config.height/2, 'ui_menu_inicio').setOrigin(.5, .5).setScale(15).setVisible(false);
         menu_inicio.fondo.anims.play('ui_menu_inicio');
 
         menu_creditos.fondo = this.add.sprite(config.width/2 + 1920, config.height/2, 'ui_creditos_menu').setOrigin(.5, .5).setScale(15).setVisible(false);
         menu_creditos.boton_volver = this.add.sprite(config.width/2 + 1920, config.height/2, 'ui_menu_exit').setOrigin(.5, .5).setScale(8).setVisible(false);
+
+        menu_derrota.fondo = this.add.sprite((config.width/2) - 1920, config.height/2, 'ui_menu_derrota').setOrigin(.5, .5).setScale(15).setVisible(true);
+
+        menu_victoria.fondo = this.add.sprite((config.width/2) - 1920, config.height/2, 'ui_menu_victoria').setOrigin(.5, .5).setScale(15).setVisible(true);
 
         menu_inicio.boton_jugar = this.add.sprite((config.width/2 - 300 )- 1920, config.height/1.25, 'ui_menu_jugar').setOrigin(.5, .5).setScale(4).setVisible(false)
         .setInteractive().on('pointerover', function(pointer) {
@@ -138,6 +160,8 @@ class Interfaz extends Phaser.Scene {
             menu_inicio.boton_jugar.setFrame(0);
         }).on('pointerdown', function(pointer) {
             Interfaz.cambiarMusica("musica_1");
+            menu_controles.fondo.setVisible(true);
+            Interfaz.desactivar_controles_en(10);
             Interfaz.ocultar_menu_inicio();
             Interfaz.mostrar_todo();
         });
@@ -181,30 +205,32 @@ class Interfaz extends Phaser.Scene {
             Interfaz.ocultar_menu_creditos();
         });;
         
-
-        this.input.keyboard.on('keydown-' + 'X', function (event) { progreso_del_juego = {
-            nivel_1: 1,
-            nivel_2: 1,
-            nivel_3: 1,
-            nivel_4: 1,
-            nivel_5: 1,
-            nivel_6: 1,
-            nivel_7: 1,
-            nivel_8: 1,
-            nivel_9: 1,
-            nivel_10: 1,
-            nivel_11: 1,
-            nivel_12: 1,
-            nivel_13: 1,
-            nivel_14: 1,
-            nivel_15: 1
-            };
-            copas.copa_1 = true;
-            copas.copa_2 = true;
-            copas.copa_3 = true; 
-            stamina = 100 * 99999;
-            
-        }, this);
+        if (config.physics.arcade.debug) {
+            this.input.keyboard.on('keydown-' + 'X', function (event) { progreso_del_juego = {
+                nivel_1: 1,
+                nivel_2: 1,
+                nivel_3: 1,
+                nivel_4: 1,
+                nivel_5: 1,
+                nivel_6: 1,
+                nivel_7: 1,
+                nivel_8: 1,
+                nivel_9: 1,
+                nivel_10: 1,
+                nivel_11: 1,
+                nivel_12: 1,
+                nivel_13: 1,
+                nivel_14: 1,
+                nivel_15: 1
+                };
+                copas.copa_1 = true;
+                copas.copa_2 = true;
+                copas.copa_3 = true; 
+                stamina = 100 * 99999;
+                vida_jefe = 0;
+                
+            }, this);
+        }
 
         this.input.keyboard.on('keydown-' + 'ESC', function (event) {
             if (!menu_pausa_bool) {
@@ -284,8 +310,11 @@ class Interfaz extends Phaser.Scene {
         musica.play();
     }
 
-    static play_sonido(key, tune = 0){
-        sceneGlobal.sound.play(key);
+    static play_sonido(key, tune = 0, volume = 1){
+        sceneGlobal.sound.play(key, {
+            volume: volume,
+            detune: tune
+        });
     }
 
     static mostrar_dialogo_copa_america() {
@@ -326,6 +355,46 @@ class Interfaz extends Phaser.Scene {
     static mostrar_barra_vida_jefe() {
         barra_vida_jefe.visible = true;
         barra_vida_jefe_progreso.visible = true;
+    }
+
+    static desactivar_controles_en(segundos) {
+        tweenTemp.forEach(t => t.pause());
+        menu_pausa_bool = true;
+        sceneGlobal.physics.pause()
+        let pelota = menu_controles.pelota.setVisible(true);
+        pelota.x = 200;
+        pelota.y = config.height - 200;
+        sceneGlobal.tweens.addCounter({
+            from: 0,
+            to: 20,
+            duration: 1000 * segundos,
+            ease: 'Power0',
+            repeat: -1,
+            yoyo: true,
+            onUpdate: function (tween) {
+                pelota.angle += tween.getValue();
+            }
+        });
+        sceneGlobal.tweens.add({
+            targets: pelota,
+            x: 1920,
+            duration: segundos * 1000,
+            ease: 'Quad.easeIn',
+            onComplete: () => {
+                pelota.setVisible(false);
+
+                sceneGlobal.tweens.add({
+                    targets: menu_controles.fondo,
+                    x: 1920*2,
+                    duration: 1000,
+                    ease: 'Power4',
+                })
+
+                tweenTemp.forEach(t => t.resume());
+                sceneGlobal.physics.resume();
+                menu_pausa_bool = false;
+            }
+        });
     }
 
     static mostrar_menu_creditos() {
@@ -393,6 +462,9 @@ class Interfaz extends Phaser.Scene {
     }
 
     static mostrar_menu_inicio() {
+        tweenTemp.forEach(t => t.pause());
+        menu_pausa_bool = true;
+        sceneGlobal.physics.pause()
         primeraVez = false;
         this.ocultar_todo();
         //menu_inicio.fondo.setDepth(5);
@@ -427,7 +499,29 @@ class Interfaz extends Phaser.Scene {
         });
     }
 
+    static mostrar_menu_ganaste() {
+        //tweenTemp.forEach(t => t.pause());
+        menu_pausa_bool = true;
+        //sceneGlobal.physics.pause();
+        menu_victoria.fondo.visible = true;
+
+        sceneGlobal.tweens.add({
+            targets: menu_victoria.fondo,
+            x: config.width / 2,
+            duration: 1000,
+            ease: 'Bounce',
+            repeat: 0,
+            completeDelay: 10000,
+            onComplete: () => {
+                location.reload();
+            }
+        });
+    }
+
     static ocultar_menu_inicio() {
+        tweenTemp.forEach(t => t.resume());
+        sceneGlobal.physics.resume();
+        menu_pausa_bool = false;
         this.ocultar_todo();
         menu_inicio.fondo_fondo.alpha = 0;
         //menu_inicio.fondo.setDepth(5);
@@ -485,6 +579,34 @@ class Interfaz extends Phaser.Scene {
             repeat: 0,
             onUpdate: function(tween) {
                 menu_pausa.fondo.alpha = tween.getValue();
+            }
+        });
+    }
+
+    static mostrar_pantalla_derrota() {
+        menu_derrota.fondo.x = (config.width/2) - 1920;
+        menu_pausa_bool = true;
+        sceneGlobal.physics.pause()
+        tweenTemp.forEach(t => t.pause());
+        menu_derrota.fondo.anims.play('ui_menu_derrota', false);
+        sceneGlobal.tweens.add({
+            targets: menu_derrota.fondo,
+            x: (config.width/2),
+            duration: 1000,
+            ease: 'Power4',
+            repeat: 0,
+            completeDelay: 1200,
+            onComplete: function () {
+                tweenTemp.forEach(t => t.resume());
+                sceneGlobal.physics.resume();
+                menu_pausa_bool = false;
+                sceneGlobal.tweens.add({
+                    targets: menu_derrota.fondo,
+                    x: (config.width/2) + (1920*2),
+                    duration: 1500,
+                    ease: 'Power4',
+                    repeat: 0,
+                });
             }
         });
     }
