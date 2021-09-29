@@ -2,6 +2,8 @@ const EVENT_ABRIR_PUERTAS = new Event('abrir_puertas');
 
 let primeraVez = true;
 let final = true;
+let espera = 3000;
+let canto = null;
 
 let vida_jefe = 100;
 let jefe = null;

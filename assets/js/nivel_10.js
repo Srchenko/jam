@@ -30,9 +30,9 @@ class Nivel_10 extends Phaser.Scene {
     }
 
     update(time, delta){
-        Funciones.updateJugador(this, jugador, delta);
-
         if (!menu_pausa_bool) {
+            Funciones.updateJugador(this, jugador, delta);
+            
             Funciones.updatePelota(this, pelota);
 
             Funciones.updateEnemigo(this, enemigo);

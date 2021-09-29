@@ -28,9 +28,13 @@ class Nivel_1 extends Phaser.Scene {
     }
 
     update(time, delta){
-        Funciones.updateJugador(this, jugador, delta);
+        if (espera < 2600){
+            espera += delta;
+        }
 
-        if (!menu_pausa_bool) {
+        if (!menu_pausa_bool && espera >= 2600) {
+            Funciones.updateJugador(this, jugador, delta);
+
             Funciones.updatePelota(this, pelota);
 
             Funciones.updateEnemigo(this, enemigo);

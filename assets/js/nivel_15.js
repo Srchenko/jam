@@ -8,6 +8,8 @@ class Nivel_15 extends Phaser.Scene {
         enemigos = [];
         if(final){
             Interfaz.cambiarMusica("musica_5");
+            let jefe_gol = sceneGlobal.sound.add("jefe_gol", {volume: 1, loop: false});
+            jefe_gol.play();
             final = false;
         }
 
@@ -17,9 +19,6 @@ class Nivel_15 extends Phaser.Scene {
 
         Funciones.initJugador(this);
         Funciones.initPelota(this);
-        
-        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 800, y: 200});
-        Funciones.initEnemigoGrandote(this, (Math.PI / 2) - (Math.PI / 4), {x: 1100, y: 880});
 
         Funciones.initInputs(this);
         Funciones.initBordes(this);
@@ -36,12 +35,10 @@ class Nivel_15 extends Phaser.Scene {
     }
 
     update(time, delta){
-        Funciones.updateJugador(this, jugador, delta);
-
         if (!menu_pausa_bool) {
-            Funciones.updatePelota(this, pelota);
+            Funciones.updateJugador(this, jugador, delta);
 
-            Funciones.updateEnemigo(this, enemigo);
+            Funciones.updatePelota(this, pelota);
 
             Funciones.updateJefe(this);
         }

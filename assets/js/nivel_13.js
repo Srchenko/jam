@@ -15,7 +15,6 @@ class Nivel_13 extends Phaser.Scene {
         Funciones.initPelota(this);
         
         Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 1400, y: 800}, {x: 300, y: 300});
-        Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 400, y: 800}, {x: -300, y: -300});
         Funciones.initEnemigo(this, (Math.PI / 2) + (Math.PI / 4), {x: 400, y: 200});
         Funciones.initEnemigosDuo(this);
 
@@ -29,9 +28,9 @@ class Nivel_13 extends Phaser.Scene {
     }
 
     update(time, delta){
-        Funciones.updateJugador(this, jugador, delta);
-
         if (!menu_pausa_bool) {
+            Funciones.updateJugador(this, jugador, delta);
+
             Funciones.updatePelota(this, pelota);
 
             Funciones.updateEnemigo(this, enemigo);

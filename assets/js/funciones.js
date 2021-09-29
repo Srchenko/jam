@@ -10,8 +10,6 @@ class Funciones {
             if (vida_jefe > 0) dominio_de_la_pelota = "enemigo";
             console.log(vida_jefe);
             contador_dominio_pelota = 0;
-            //sceneGlobal.sound.play("patada");
-            //sceneGlobal.sound.play("emocion");
             let angulo;
 
             angulo = Phaser.Math.Angle.Between(jugador.x, jugador.y, pelota.x, pelota.y);
@@ -247,8 +245,6 @@ class Funciones {
             dominio_de_la_pelota = "enemigo";
             contador_dominio_pelota = 0;
             Interfaz.play_sonido("kick", -600, 0.4);
-            //sceneGlobal.sound.play("patada");
-            //sceneGlobal.sound.play("emocion");
             let angulo;
 
             angulo = Phaser.Math.Angle.Between(pelota.x, pelota.y, enemies.x, enemies.y);
@@ -282,7 +278,9 @@ class Funciones {
             }));
             
         }else if (dominio_de_la_pelota == "player") {
-            Interfaz.play_sonido("cancha_bobo", 1200, 0.4);
+            if(Phaser.Math.Between(1,3) == 1){
+                Interfaz.play_sonido("cancha_bobo", 1200, 0.4);
+            }
             enemies.setVelocity(0,0);
             enemies.destroy();
             enemigos_vivos--;
@@ -336,7 +334,9 @@ class Funciones {
                 )
             });
         }else if (dominio_de_la_pelota == "player") {
-            Interfaz.play_sonido("cancha_bobo", -200, 0.4);
+            if(Phaser.Math.Between(1,3) == 1){
+                Interfaz.play_sonido("cancha_bobo", -200, 0.4);
+            }
             enemies.setVelocity(0,0);
             enemies.destroy();
             enemigos_vivos--;
@@ -738,13 +738,9 @@ class Funciones {
     }
 
     static fueraLinea(pelotis, bordis){
-        Interfaz.play_sonido("fuera", 0, .4);
+        Interfaz.play_sonido("fuera", 0, 0.2);
         dominio_de_la_pelota = "nadie";
-        //sceneGlobal.sound.play("silbato");
-        //sceneGlobal.sound.play("patada");
-        //pelotis.tween.restart();
         tweenTemp.forEach(t => t.stop());
-        // pelotis.tween.remove();
         if(pelotis.x > (config.width/2) + ((fuera_linea_offsets.derecha.x + fuera_linea_offsets.izquierda.x)/4)){
             var _= sceneGlobal.add.sprite(50 + fuera_linea_offsets.izquierda.x,(config.height/2) + fuera_linea_offsets.izquierda.y,"personaje_fuera").setScale(4);
             _.rotation = Math.PI/2;

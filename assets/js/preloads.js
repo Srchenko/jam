@@ -61,6 +61,10 @@ class Preloads extends Phaser.Scene {
         this.load.audio('musica_3', 'assets/sounds/musica_3.mp3');
         this.load.audio('musica_4', 'assets/sounds/musica_4.mp3');
         this.load.audio('musica_5', 'assets/sounds/musica_5.mp3');
+
+        this.load.audio('canto_extranio', 'assets/sounds/canto_extranio.mp3');
+        this.load.audio('jefe_gol', 'assets/sounds/jefe_gol.mp3');
+        this.load.audio('victoria', 'assets/sounds/victoria.mp3');
     }
  
     create() {

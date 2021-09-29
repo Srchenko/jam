@@ -8,6 +8,7 @@ class Nivel_4 extends Phaser.Scene {
         enemigos = [];
 
         sceneGlobal = this;
+        Interfaz.canto("canto_extranio");
 
         this.add.image(config.width / 2, config.height / 2, this.sys.config);
 
@@ -29,9 +30,9 @@ class Nivel_4 extends Phaser.Scene {
     }
 
     update(time, delta){
-        Funciones.updateJugador(this, jugador, delta);
-
         if (!menu_pausa_bool) {
+            Funciones.updateJugador(this, jugador, delta);
+
             Funciones.updatePelota(this, pelota);
 
             Funciones.updateEnemigo(this, enemigo);

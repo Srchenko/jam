@@ -238,39 +238,7 @@ class Interfaz extends Phaser.Scene {
             }else{
                 Interfaz.ocultar_menu_pausa();
             }
-        });
-
-        // BORRAR TODO ESTO PARA EL ENTREGAR.
-        if (config.physics.arcade.debug) {
-            this.input.on('pointerup', function(pointer){
-                var touchX = pointer.x;
-                var touchY = pointer.y;
-                
-                if(!dibujando){
-                    this.add.rectangle(touchX, touchY, 20, 20, 0xffffff);
-                    dibujostart.x = touchX;
-                    dibujostart.y = touchY;
-                    dibujando = true;
-                }else{
-                    if (pointer.x - dibujostart.x < 0 || pointer.y - dibujostart.y < 0) {
-                        this.add.rectangle(dibujostart.x, dibujostart.y, pointer.x - dibujostart.x,  pointer.y - dibujostart.y, 0xff0000).setOrigin(0, 0).setAlpha(0.2);
-                        this.add.rectangle(touchX, touchY, 20, 20, 0xffffff);
-
-                        console.log("Al revés porfi");
-
-                    }else {
-                        this.add.rectangle(dibujostart.x, dibujostart.y, pointer.x - dibujostart.x,  pointer.y - dibujostart.y, 0xffffff).setOrigin(0, 0).setAlpha(0.2);
-                        this.add.rectangle(touchX, touchY, 20, 20, 0xffffff);
-
-                        console.log(`this.physics.add.existing(obstaculos[obstaculos.push(this.add.rectangle(${dibujostart.x}, ${dibujostart.y}, ${pointer.x - dibujostart.x},  ${pointer.y - dibujostart.y}, 0xffffff).setOrigin(0, 0).setAlpha(0)) - 1], true);`);
-                    }
-                    dibujando = false;
-                }
-            }, this);
-        }
-        // ---------------------------------------------
-
-        
+        });        
 
     }
 
@@ -308,6 +276,14 @@ class Interfaz extends Phaser.Scene {
         }
         musica = sceneGlobal.sound.add(texto, {volume: 0.2, loop: true});
         musica.play();
+    }
+
+    static canto(texto){
+        if(canto){
+            canto.stop();
+        }
+        canto = sceneGlobal.sound.add(texto, {volume: 0.8, loop: false});
+        canto.play();
     }
 
     static play_sonido(key, tune = 0, volume = 1){
@@ -467,7 +443,6 @@ class Interfaz extends Phaser.Scene {
         sceneGlobal.physics.pause()
         primeraVez = false;
         this.ocultar_todo();
-        //menu_inicio.fondo.setDepth(5);
         menu_inicio.fondo.visible = true;
         menu_inicio.boton_jugar.visible = true;
         menu_inicio.boton_creditos.visible = true;
@@ -500,10 +475,11 @@ class Interfaz extends Phaser.Scene {
     }
 
     static mostrar_menu_ganaste() {
-        //tweenTemp.forEach(t => t.pause());
         menu_pausa_bool = true;
-        //sceneGlobal.physics.pause();
         menu_victoria.fondo.visible = true;
+        musica.stop();
+        let victoria = sceneGlobal.sound.add("victoria", {volume: 0.9, loop: false});
+        victoria.play();
 
         sceneGlobal.tweens.add({
             targets: menu_victoria.fondo,
@@ -586,6 +562,7 @@ class Interfaz extends Phaser.Scene {
     static mostrar_pantalla_derrota() {
         menu_derrota.fondo.x = (config.width/2) - 1920;
         menu_pausa_bool = true;
+        espera = 0;
         sceneGlobal.physics.pause()
         tweenTemp.forEach(t => t.pause());
         menu_derrota.fondo.anims.play('ui_menu_derrota', false);

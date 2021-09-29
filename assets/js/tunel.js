@@ -30,7 +30,7 @@ class Tunel extends Phaser.Scene {
 
     cambiarNivel(uno, dos){
         posicion_inicio = {x: 960, y: 900};
-        this.scene.start('nivel_1');
+        this.scene.start('nivel_15');
     }
 
     initColliders() {
